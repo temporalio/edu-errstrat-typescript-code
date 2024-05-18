@@ -103,7 +103,7 @@ To run the Workflow:
 
 1. In one terminal, start the Worker by running `npm run start`.
 2. In another terminal, start the Workflow by running `npm run workflow`.
-3. You should see the Workflow Execution failed.
-4. Over in the Web UI (or the terminal window where your Worker ran), you can see that after the `sendBill` Activity failed, we then called the Activities: `revertCustomer` and `revertInventory`.
+3. You should see the Workflow Execution failed. There is now a  ``WorkflowExecutionFailed` Event in the Web UI.
+4. Over in the Web UI (or the terminal window where your Worker ran), you can see that after the `sendBill` Activity failed, we then called the Activities: `refundCustomer` and `revertInventory`.
 
 ### This is the end of the exercise.
