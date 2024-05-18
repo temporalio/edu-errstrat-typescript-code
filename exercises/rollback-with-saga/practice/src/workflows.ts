@@ -3,19 +3,20 @@ import type * as activities from './activities';
 // TODO Part F: Import your `compensatse` function and `errorMessage` function
 // From compensationUtils.
 // TODO Part E: Import your `Compensation` interface from `.shared.ts`.
-import { Distance, PizzaOrder, OutOfServiceAreaError, OrderConfirmation} from './shared';
+import { Distance, PizzaOrder, OutOfServiceAreaError, OrderConfirmation } from './shared';
 
 // TODO Part B: Add `refundCustomer` and `revertInventory`
 // into `proxyActivities`.
-const { sendBill, getDistance, validateAddress, validateCreditCard, updateInventory} =
-  proxyActivities<typeof activities>({
-    startToCloseTimeout: '5 seconds',
-    retry: {
-      maximumInterval: '10 seconds',
-      // TODO Part A: Add `TestError` into the `nonRetryableErrorTypes`.
-      nonRetryableErrorTypes: ['CreditCardNumberError', 'InvalidAddressError', 'InvalidChargeError'],
-    },
-  });
+const { sendBill, getDistance, validateAddress, validateCreditCard, updateInventory } = proxyActivities<
+  typeof activities
+>({
+  startToCloseTimeout: '5 seconds',
+  retry: {
+    maximumInterval: '10 seconds',
+    // TODO Part A: Add `TestError` into the `nonRetryableErrorTypes`.
+    nonRetryableErrorTypes: ['CreditCardNumberError', 'InvalidAddressError', 'InvalidChargeError'],
+  },
+});
 
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let compensations: Compensation[] = [];

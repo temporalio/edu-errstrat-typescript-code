@@ -4,11 +4,11 @@ export const TASK_QUEUE_NAME = 'pizza-tasks';
 
 // TODO Part C: Create an interface called `Compensation`
 // It will take in a key of `message` of type string
-// It will also take in a key of `fn` with the value 
+// It will also take in a key of `fn` with the value
 // of `() => Promise<void>`.
 
 // TODO Part A: Uncomment the TestError below
-// We will throw this error in the `SendBill` Activity 
+// We will throw this error in the `SendBill` Activity
 // to roll back compensations since that step.
 // export class TestError extends Error {
 //   constructor() {

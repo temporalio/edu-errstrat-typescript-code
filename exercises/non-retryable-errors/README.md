@@ -35,8 +35,8 @@ In this part of the exercise, we will configure the retry policies of an error.
 1. In `activities.ts`, notice that we added a new Activity for you called `notifyInternalDeliveryDriver`. This Activitiy simulates that an internal driver is not available. This Activity has a hard coded error thrown: `FetchingInternalDriverError`. We will now configure this error.
 2. Edit `workflows.ts`.
 3. We want to set the retry policy to retry once per second for five seconds for simplicity's sake. In the `retry` object of your `proxyActivities`, add in the values for `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts` that would allow for this.
-3. Now notice line 92. In this `try/catch` block, you can see that we call `notifyInternalDeliveryDriver`. If after we retried this Activity once per second for five seconds and we still do not successfully execute this Activity, we will invoke `pollExternalDeliveryDriver`. This Activity will poll a microservice looking for external drivers (e.g., UberEats, Grubhub, DoorDash).
-4. Save your file.
+4. Now notice line 92. In this `try/catch` block, you can see that we call `notifyInternalDeliveryDriver`. If after we retried this Activity once per second for five seconds and we still do not successfully execute this Activity, we will invoke `pollExternalDeliveryDriver`. This Activity will poll a microservice looking for external drivers (e.g., UberEats, Grubhub, DoorDash).
+5. Save your file.
 
 ## Part C: Run the Workflow
 

@@ -6,25 +6,25 @@ const { sendBill, getDistance, validateAddress, validateCreditCard } = proxyActi
   startToCloseTimeout: '5 seconds',
   retry: {
     initialInterval: '1 second',
-    backoffCoefficient: 1.0,
+    backoffCoefficient: 2.0,
     maximumInterval: '1 second',
-    maximumAttempts: 5,
+    maximumAttempts: 6,
   },
 });
 
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let totalPrice = 0;
 
-    // Validate the credit card number
-    try {
-      await validateCreditCard(order.customer.creditCardNumber);
-    } catch (err) {
-      if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-        log.error(err.cause.message);
-      } else {
-        log.error(`error validating credit card number: ${err}`);
-      }
-    }  
+  // Validate the credit card number
+  try {
+    await validateCreditCard(order.customer.creditCardNumber);
+  } catch (err) {
+    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
+      log.error(err.cause.message);
+    } else {
+      log.error(`error validating credit card number: ${err}`);
+    }
+  }
 
   // Validate the address
   try {

@@ -66,7 +66,7 @@ function createPizzaOrder(): PizzaOrder {
     items,
     address,
     isDelivery: true,
-    pollExternalDriver: false
+    pollExternalDriver: false,
   };
 
   return order;

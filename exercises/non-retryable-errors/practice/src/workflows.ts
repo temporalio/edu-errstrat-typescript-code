@@ -1,11 +1,4 @@
-import {
-  proxyActivities,
-  ApplicationFailure,
-  ActivityFailure,
-  log,
-  sleep,
-  defineSignal,
-} from '@temporalio/workflow';
+import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep, defineSignal } from '@temporalio/workflow';
 import type * as activities from './activities';
 import { Distance, OrderConfirmation, PizzaOrder, OutOfServiceAreaError } from './shared';
 
@@ -19,11 +12,10 @@ const {
 } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
   retry: {
-    // TODO Part B: Add in the values for 
+    // TODO Part B: Add in the values for
     // `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts`
-    // to allow for the retry of these Activities to be 
+    // to allow for the retry of these Activities to be
     // once per second for five seconds
-    
     // TODO Part A: Add a `nonRetryableErrorTypes` key
     // In the array of `nonRetryableErrorTypes`, add
     // `CreditCardNumberError`, `InvalidAddressError`, and `InvalidChargeError`.

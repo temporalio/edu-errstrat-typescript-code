@@ -1,4 +1,4 @@
-// TODO Part E: Uncomment the import statement below 
+// TODO Part E: Uncomment the import statement below
 // import { ApplicationFailure } from "@temporalio/common";
 
 export const TASK_QUEUE_NAME = 'pizza-tasks';

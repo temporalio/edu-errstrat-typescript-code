@@ -7,7 +7,7 @@ import {
   InvalidChargeError,
   OrderConfirmation,
   PizzaOrder,
-  TestError
+  TestError,
 } from './shared';
 import { log } from '@temporalio/activity';
 
@@ -33,8 +33,8 @@ export async function getDistance(address: Address): Promise<Distance> {
 
 export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
   // throw new TestError;
-  throw new TestError;
-  
+  throw new TestError();
+
   log.info('sendBill invoked', { Customer: bill.customerID, Amount: bill.amount });
 
   let chargeAmount = bill.amount;
@@ -112,5 +112,5 @@ export async function revertInventory(items: PizzaOrder['items']): Promise<void>
 
 export async function refundCustomer(bill: Bill): Promise<void> {
   // Simulate refunding the customer
-  log.info(`Refunding ${bill.amount} to customer ${bill.customerID} for order ${bill.orderNumber}`);;
+  log.info(`Refunding ${bill.amount} to customer ${bill.customerID} for order ${bill.orderNumber}`);
 }

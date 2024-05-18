@@ -1,4 +1,12 @@
-import { Address, Bill, CreditCardNumberError, Distance, InvalidAddressError, InvalidChargeError, OrderConfirmation } from './shared';
+import {
+  Address,
+  Bill,
+  CreditCardNumberError,
+  Distance,
+  InvalidAddressError,
+  InvalidChargeError,
+  OrderConfirmation,
+} from './shared';
 import { log } from '@temporalio/activity';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -63,8 +71,8 @@ export async function validateAddress(address: Address): Promise<void> {
   const isPostalCodeValid = address.postalCode.length == 5;
 
   // Check if any address fields contain special characters
-  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(field => 
-    field && specialCharRegex.test(field)
+  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(
+    (field) => field && specialCharRegex.test(field)
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {

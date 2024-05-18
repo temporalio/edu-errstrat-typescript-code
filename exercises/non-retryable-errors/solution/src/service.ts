@@ -8,13 +8,13 @@ const port = 9998;
 
 app.get('/getExternalDeliveryDriver', async (req: Request, res: Response) => {
   // Simulate waiting for external services to respond
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   console.log('Checking UberEats...');
 
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   console.log('Checking Grubhub...');
 
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   console.log('Checking DoorDash... Responded.');
 
   // Return the response from DoorDash

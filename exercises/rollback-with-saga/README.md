@@ -30,7 +30,7 @@ Before you begin, there is already an `updateInventory` Activity provided for yo
 
 Imagine that there is an error in the `sendBill` Activity. We would then want to roll back on sending the bill by invoking a `refundCustomer` Activity. We would also want to roll back on the `updateInventory` Activity by invoking a `revertInventory` Activity, which would add the ingredients back into the pizza inventory.
 
-In this part of the exercise, you will create your compensation Activities. When one of the Activities fails, the Workflow will "compensate" by calling Activities configured as reversals of successful calls to that point. 
+In this part of the exercise, you will create your compensation Activities. When one of the Activities fails, the Workflow will "compensate" by calling Activities configured as reversals of successful calls to that point.
 
 1. Edit the `activities.ts` file.
 2. Uncomment the `revertInventory` Activity.
@@ -41,7 +41,7 @@ In this part of the exercise, you will create your compensation Activities. When
 
 ## Part C: Create Your Compensation List
 
-In this part of the exercise, you will create an array of compensation objects. Each compensation object will include an Activity that would cause the rolling back of the Activity that would fail. 
+In this part of the exercise, you will create an array of compensation objects. Each compensation object will include an Activity that would cause the rolling back of the Activity that would fail.
 
 We want the array of compensation objects to take on a shape like this: `[{message: 'unable to call Activity A successfully', fn: revertActivityA()}, {message: 'unable to call Activity B successfully', fn: revertActivityB()}]`.
 
@@ -62,17 +62,17 @@ In this part of the exercise, you will create a function which will loop through
 5. Surround the `try/catch` block with a `foreach` statement that iterates over the `compensations` array, using `comp` as the name for each element (thereby matching the name of the object referenced in the `await` statement).
 6. Save the file.
 
-## Part E: Fill in Your Compensation Array 
+## Part E: Fill in Your Compensation Array
 
 In this part of the exercise, you will fill in the `compensations` array that you will call the `comepnsate` function on.
 
-Before we call an Activity, we want to add the correlating compensation Activity into the `compensations` list. For example, before we call `sendBill`, we want to add `refundCustomer` into the list of compensations. 
+Before we call an Activity, we want to add the correlating compensation Activity into the `compensations` list. For example, before we call `sendBill`, we want to add `refundCustomer` into the list of compensations.
 
 Then, if `sendBill` throws an error, we call the `compensate` function which rolls back on the `sendBill` Activity by calling `refundCustomer`.
 
 1. Edit the `workflows.ts` file.
 2. Import your `Compensation` interface from `shared.ts` that you defined in Part C. Notice that on line 21, we define a variable called `compensations`, which is a list of `Compensation` objects (and defaulted as an empty array).
-3. Look at the first compensation (compensation for `updateInventory`) which is provided for you on line 64. Before we call `updateInventory`, we add its compensating counterpart - `revertInventory` into the array of `compensations`. On line 64, you can see how this is done. We use the `unshift` method, which adds an item in the beginning of an array. This ensures that the compensations are executed in the reverse order of their addition, which is important for correctly reversing the steps of the Workflow. 
+3. Look at the first compensation (compensation for `updateInventory`) which is provided for you on line 64. Before we call `updateInventory`, we add its compensating counterpart - `revertInventory` into the array of `compensations`. On line 64, you can see how this is done. We use the `unshift` method, which adds an item in the beginning of an array. This ensures that the compensations are executed in the reverse order of their addition, which is important for correctly reversing the steps of the Workflow.
 4. Following the pattern in step 3, add a compensation for an error in the `sendBill` Activity. On line 91, add in a compensation object for `sendBill` by calling `refundCustomer` which takes in a `bill` argument.
 5. At this point, as you go through the pizza Workflow, your `compensations` array should look like this: `[
   { message: 'reversing send bill: ', fn: refundCustomer },
@@ -81,7 +81,7 @@ Then, if `sendBill` throws an error, we call the `compensate` function which rol
 
 ## Part F: Call the `compensate` Function
 
-In this part of the exercise, you will call the `compensate` function that you defined in Part D.  
+In this part of the exercise, you will call the `compensate` function that you defined in Part D.
 
 1. Edit the `workflows.ts` file.
 2. Import your `compensate` function and `errorMessage` function from the `compensationUtils` file you looked at in part D.
@@ -103,7 +103,7 @@ To run the Workflow:
 
 1. In one terminal, start the Worker by running `npm run start`.
 2. In another terminal, start the Workflow by running `npm run workflow`.
-3. You should see the Workflow Execution failed. There is now a  ``WorkflowExecutionFailed` Event in the Web UI.
+3. You should see the Workflow Execution failed. There is now a ``WorkflowExecutionFailed` Event in the Web UI.
 4. Over in the Web UI (or the terminal window where your Worker ran), you can see that after the `sendBill` Activity failed, we then called the Activities: `refundCustomer` and `revertInventory`.
 
 ### This is the end of the exercise.

@@ -64,15 +64,15 @@ export async function validateAddress(address: Address): Promise<void> {
   const isPostalCodeValid = address.postalCode.length == 5;
 
   // Check if any address fields contain special characters
-  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(field => 
-    field && specialCharRegex.test(field)
+  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(
+    (field) => field && specialCharRegex.test(field)
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {
-   // TODO Part C: Replace line 75 with throwing a new InvalidAddressError
-   // You can use line 39 as a reference.
-   // Pass in the address into the Error.
-   log.error('invalid address')
+    // TODO Part C: Replace line 75 with throwing a new InvalidAddressError
+    // You can use line 39 as a reference.
+    // Pass in the address into the Error.
+    log.error('invalid address');
   }
 
   log.info('validateAddress complete', { Address: address });
@@ -85,10 +85,10 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-  // TODO Part C: Replace line 91 with throwing a new CreditCardNumberError
-  // You can use line 39 as a reference.
-  // Pass in the creditCardNumber into the Error.
-   log.error('invalid credit card number')
+    // TODO Part C: Replace line 91 with throwing a new CreditCardNumberError
+    // You can use line 39 as a reference.
+    // Pass in the creditCardNumber into the Error.
+    log.error('invalid credit card number');
   }
 
   log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });

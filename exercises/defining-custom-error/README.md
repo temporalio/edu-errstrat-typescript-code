@@ -65,12 +65,12 @@ In this part of the exercise, you will throw your Custom Error that will fail yo
 
 1. Edit the `workflows.ts` file.
 2. Import `OutOfServiceAreaError` from `shared.ts` at the top of your file.
-3. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers (line 51), add a line where you throw the `OutofServiceAreaError`. 
+3. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers (line 51), add a line where you throw the `OutofServiceAreaError`.
 4. Save your file.
 
 ## Part H: Run the Workflow
 
-In this part of the exercise, you will run your Workflow and see both your Workflow and Activity fail. 
+In this part of the exercise, you will run your Workflow and see both your Workflow and Activity fail.
 
 In the `client.ts` file, an invalid credit card number has been provided which will throw an error in the `validCreditCard` Activity. An invalid address has also been provided which should fail your Workflow.
 

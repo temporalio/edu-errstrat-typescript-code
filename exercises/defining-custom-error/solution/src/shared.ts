@@ -1,4 +1,4 @@
-import { ApplicationFailure } from "@temporalio/common";
+import { ApplicationFailure } from '@temporalio/common';
 
 export const TASK_QUEUE_NAME = 'pizza-tasks';
 
@@ -16,7 +16,11 @@ export class CreditCardNumberError extends Error {
 
 export class InvalidAddressError extends Error {
   constructor(address: Address) {
-    super(`Invalid address: ${JSON.stringify(address)}: (postal code must be 5 digits and no special characters in address fields)`);
+    super(
+      `Invalid address: ${JSON.stringify(
+        address
+      )}: (postal code must be 5 digits and no special characters in address fields)`
+    );
   }
 }
 

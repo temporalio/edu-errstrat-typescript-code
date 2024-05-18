@@ -1,4 +1,13 @@
-import { Address, Bill, CreditCardNumberError, Distance, InvalidAddressError, InvalidChargeError, OrderConfirmation, FetchingInternalDriverError } from './shared';
+import {
+  Address,
+  Bill,
+  CreditCardNumberError,
+  Distance,
+  InvalidAddressError,
+  InvalidChargeError,
+  OrderConfirmation,
+  FetchingInternalDriverError,
+} from './shared';
 import axios from 'axios';
 import { log } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
@@ -65,8 +74,8 @@ export async function validateAddress(address: Address): Promise<void> {
   const isPostalCodeValid = address.postalCode.length == 5;
 
   // Check if any address fields contain special characters
-  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(field => 
-    field && specialCharRegex.test(field)
+  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(
+    (field) => field && specialCharRegex.test(field)
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {
@@ -92,7 +101,7 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
 export async function notifyInternalDeliveryDriver(order: PizzaOrder): Promise<void> {
   log.info('notifyInternalDeliveryDriver invoked', { Order: order });
   // Simulate that the internal driver is not available
-  throw new FetchingInternalDriverError;
+  throw new FetchingInternalDriverError();
 }
 
 // If an internal driver is not available, we poll the externalDeliveryDriver service
@@ -104,11 +113,14 @@ export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<voi
   try {
     const response = await axios.get(url);
     const content = response.data;
-    log.info("MY CONTENTTT", content)
+    log.info('MY CONTENTTT', content);
     log.info(`External delivery driver assigned from: ${content.service}`);
   } catch (error: any) {
     if (error.response) {
-      log.error('External delivery driver request failed:', { status: error.response.status, data: error.response.data });
+      log.error('External delivery driver request failed:', {
+        status: error.response.status,
+        data: error.response.data,
+      });
       throw new Error(`HTTP Error ${error.response.status}: ${error.response.data}`);
     } else if (error.request) {
       log.error('External delivery driver request failed:', { request: error.request });
