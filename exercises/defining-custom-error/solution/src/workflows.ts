@@ -15,6 +15,17 @@ const { sendBill, getDistance, validateAddress, validateCreditCard } = proxyActi
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let totalPrice = 0;
 
+    // Validate the credit card number
+    try {
+      await validateCreditCard(order.customer.creditCardNumber);
+    } catch (err) {
+      if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
+        log.error(err.cause.message);
+      } else {
+        log.error(`error validating credit card number: ${err}`);
+      }
+    }  
+
   // Validate the address
   try {
     await validateAddress(order.address);
@@ -44,17 +55,6 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
   for (const pizza of order.items) {
     totalPrice += pizza.price;
-  }
-
-  // Validate the credit card number
-  try {
-    await validateCreditCard(order.customer.creditCardNumber);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating credit card number: ${err}`);
-    }
   }
 
   // We use a short Timer duration here to avoid delaying the exercise

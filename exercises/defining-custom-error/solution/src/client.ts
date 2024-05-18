@@ -32,26 +32,16 @@ function createPizzaOrder(): PizzaOrder {
   const customer = {
     customerID: 12983,
     // Invalid credit card number:
-    // creditCardNumber: '1234567890thisisinvalid',
-    // Valid credit card number:
-    creditCardNumber: '1234567890abcdef',
+    creditCardNumber: '1234567890thisisinvalid',
     name: 'María García',
     email: 'maria1985@example.com',
     phone: '415-555-7418',
   };
 
   // Invalid address:
-  // const address = {
-  //   line1: '701 Mission Street',
-  //   line2: 'thisisinvalidthisisinvalidthisisinvalidthisisinvalidthisisinvalidthisinvalid',
-  //   city: 'San Francisco',
-  //   state: 'CA',
-  //   postalCode: '94103',
-  // };
-  // Valid address:
   const address = {
     line1: '701 Mission Street',
-    line2: 'Apartment 9C',
+    line2: 'thisisinvalidthisisinvalidthisisinvalidthisisinvalidthisisinvalidthisinvalid',
     city: 'San Francisco',
     state: 'CA',
     postalCode: '94103',

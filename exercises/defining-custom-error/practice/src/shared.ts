@@ -1,9 +1,9 @@
-// TODO Part D: Uncomment the import statement below 
+// TODO Part E: Uncomment the import statement below 
 // import { ApplicationFailure } from "@temporalio/common";
 
 export const TASK_QUEUE_NAME = 'pizza-tasks';
 
-// TODO Part E: Create a new error called OutOfServiceAreaError
+// TODO Part F: Create a new error called OutOfServiceAreaError
 // This error should extend ApplicationFailure
 // Let it log theh string: 'Customer lives too far away for delivery'
 

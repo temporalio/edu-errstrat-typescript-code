@@ -37,12 +37,21 @@ In this part of the exercise, you will throw your custom errors that will fail y
 3. In the `validateCreditCard` Activity, replace line 91 with throwing a new `CreditCardNumberError`. Pass in `creditCardNumber`.
 4. Save the file.
 
-## Part D: Importing `ApplicationFailure`
+## Part D: Throwing the Activity Failures in Your Workflow
+
+In this part of the exercise, you will throw your Activity Failures that will fail your Activity Executions.
+
+1. Edit the `workflows.ts` file.
+2. Add `ApplicationFailure` and `ActivityFailure` in your imports from `@temporalio/workflow` at the top of your file.
+3. Look at the example on line 33. If there is an error thrown in your `validateAddress`, then we throw an `ActivityFailure` which fails the Activity Execution. In the `catch` statement, we check if the error is an instance of `ActivityFailure` and if the cause of the error is an instance of the `ApplicationFailure`. If it is, we log the message of the error.
+4. Follow the pattern and do the same on line 24, so we can log the error the `catch` block of running the `validateCreditCard` Activity.
+
+## Part E: Importing `ApplicationFailure`
 
 1. Edit the `shared.ts` file.
 2. Uncomment line 2 to import `ApplicationFailure`.
 
-## Part E: Defining Custom Errors for Failing Workflows
+## Part F: Defining Custom Errors for Failing Workflows
 
 In this part of the exercise, you will define your custom errors that will fail your Workflow.
 
@@ -50,54 +59,26 @@ In this part of the exercise, you will define your custom errors that will fail 
 2. Create an error called `OutOfServiceAreaError`. This error should extend `ApplicationFailure` that you just imported. It does not need to take in a parameter and it will return the message: `Customer lives too far away for delivery`.
 3. Save the file.
 
-## Part F: Throwing the Activity Failures in Your Workflow
-
-In this part of the exercise, you will throw your Activity Failures that will fail your Activity Executions.
-
-1. Edit the `workflows.ts` file.
-2. Add `ApplicationFailure` and `ActivityFailure` in your imports from `@temporalio/workflow` at the top of your file.
-3. Look at the example on line 22. If there is an error thrown in your `validateAddress`, then we throw an `ActivityFailure` which fails the Activity Execution. In the `catch` statement, we check if the error is an instance of `ActivityFailure` and if the cause of the error is an instance of the `ApplicationFailure`. If it is, we log the message of the error.
-4. Follow the pattern and do the same on line 52, so we can log the error the `catch` block of running the `validateCreditCard` Activity.
-
 ## Part G: Failing the Workflow
 
 In this part of the exercise, you will throw your Custom Error that will fail your Workflow Execution.
 
 1. Edit the `workflows.ts` file.
 2. Import `OutOfServiceAreaError` from `shared.ts` at the top of your file.
-3. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers (line 40), add a line where you throw the `OutofServiceAreaError`. 
+3. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers (line 51), add a line where you throw the `OutofServiceAreaError`. 
 4. Save your file.
 
-## Part H: Run the Workflow with an Invalid Credit Card Number
+## Part H: Run the Workflow
 
-First, let's fail the Activity by testing this with an invalid credit card number.
+In this part of the exercise, you will run your Workflow and see both your Workflow and Activity fail. 
 
-1. Edit `client.ts`.
-2. Uncomment the invalid credit card number on line 35.
-3. Uncomment the valid address on lines 52-58.
-4. Save the file.
+In the `client.ts` file, an invalid credit card number has been provided which will throw an error in the `validCreditCard` Activity. An invalid address has also been provided which should fail your Workflow.
 
 To run the Workflow:
 
 1. In one terminal, start the Worker by running `npm run start`.
 2. In another terminal, start the Workflow by running `npm run workflow`.
-3. You should see in the Web UI an `ActivityTaskFailed` Event for the `validateCreditCard` Activity.
-
-## Part I: Run the Workflow with an Invalid Address
-
-Next, let's fail the Workflow by testing this with an invalid address but valid credit card number. 
-
-1. Edit `client.ts`.
-2. Add back the comment for the invalid credit card number (line 35).
-3. Uncomment the valid edit card number on line 37.
-4. Add back the comments for the valid address (lines 52-58).
-5. Uncomment the valid address for lines 44-50.
-6. Save the file.
-
-To run the Workflow:
-
-1. In one terminal, start the Worker by running `npm run start`.
-2. In another terminal, start the Workflow by running `npm run workflow`.
-3. You should see in the Web UI a `WorkflowExecutionFailed` Event.
+3. You should see in the Web UI an `ActivityTaskFailed` Event for the `validateCreditCard` Activity. You can see in the terminal window that your Worker ran in that the Activity had five more attempts (based off of your custom retry policies) before it failed, and continued with the Workflow.
+4. You should see in the Web UI a `WorkflowExecutionFailed` Event with the message: "Customer lives too far away for delivery".
 
 ### This is the end of the exercise.
