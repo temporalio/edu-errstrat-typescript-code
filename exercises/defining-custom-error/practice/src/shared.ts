@@ -1,20 +1,4 @@
-// TODO Part E: Uncomment the import statement below
-// import { ApplicationFailure } from "@temporalio/common";
-
 export const TASK_QUEUE_NAME = 'pizza-tasks';
-
-// TODO Part F: Create a new error called OutOfServiceAreaError
-// This error should extend ApplicationFailure
-// Let it log theh string: 'Customer lives too far away for delivery'
-
-// TODO Part A: Using the `InvalidChargeError` below as a template,
-// create two new errors: `InvalidAddressError` and `CreditCardNumberError`.
-
-export class InvalidChargeError extends Error {
-  constructor(chargeAmount: number) {
-    super(`invalid charge amount: ${chargeAmount} (must be above zero)`);
-  }
-}
 
 export interface Address {
   line1: string;

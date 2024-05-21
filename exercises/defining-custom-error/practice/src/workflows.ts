@@ -1,8 +1,7 @@
-// TODO Part D: Add ApplicationFailure and ActivityFailure
+// TODO Part B: Add ApplicationFailure and ActivityFailure
 // into your imports from @temporalio/workflow
 import { proxyActivities, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
-// TODO Part G: Import OutOfServiceAreaError from shared.ts
 import { Distance, OrderConfirmation, PizzaOrder } from './shared';
 
 const { sendBill, getDistance, validateAddress, validateCreditCard } = proxyActivities<typeof activities>({
@@ -21,7 +20,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    // TODO Part D: Following line 33 as an example
+    // TODO Part B: Following line 31 as an example
     // Log the message of the error if there is an error thrown
     // In the validateCreditCard Activity
   }
@@ -48,7 +47,8 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     }
     if (distance.kilometers > 25) {
       log.error('Customer lives too far away for delivery');
-      // TODO Part G: Add a line to throw OutOfServiceAreaError
+      // TODO C: Throw an Application Failure
+      // if the customer lives more than 26km away.
     }
   }
 

@@ -23,7 +23,7 @@ In this part of the exercise, we will take the Custom Errors we defined in the f
 2. In the `retry` object of your `proxyActivities`, add in a `nonRetryableErrorTypes` key. The value of this key should be an array.
 3. Add in the custom errors you don't want to retry which are `CreditCardNumberError`, `InvalidAddressError`, and `InvalidChargeError`. Now, when these errors are thrown from an Activity, the Activity will not be retried.
 
-## Part B: Configuring Retry Policies of an Error
+## Part B: Configure Retry Policies of an Error
 
 In this part of the exercise, we will configure the retry policies of an error.
 

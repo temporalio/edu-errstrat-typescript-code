@@ -1,6 +1,6 @@
 import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
-import { Distance, OrderConfirmation, PizzaOrder, OutOfServiceAreaError } from './shared';
+import { Distance, OrderConfirmation, PizzaOrder} from './shared';
 
 const { sendBill, getDistance, validateAddress, validateCreditCard } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
@@ -49,7 +49,10 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
     if (distance.kilometers > 25) {
       log.error(`Customer lives too far away: ${distance.kilometers} km`);
-      throw new OutOfServiceAreaError();
+      throw ApplicationFailure.create({
+        message: 'Customer lives too far away for delivery',
+        details: [distance.kilometers],
+      });
     }
   }
 

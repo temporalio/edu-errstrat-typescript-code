@@ -1,5 +1,5 @@
-// TODO Part B: Import CreditCardNumberError and InvalidddressError from `shared.ts`.
-import { Address, Bill, Distance, InvalidChargeError, OrderConfirmation } from './shared';
+// TODO Part A: Import `ApplicationFailure` from `@temporalio/common`
+import { Address, Bill, Distance, OrderConfirmation } from './shared';
 import { log } from '@temporalio/activity';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -36,7 +36,10 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    throw new InvalidChargeError(chargeAmount);
+    throw ApplicationFailure.create({
+      message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
+      details: [chargeAmount],
+    });
   }
 
   // pretend we called a payment processing service here :-)
@@ -69,9 +72,10 @@ export async function validateAddress(address: Address): Promise<void> {
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {
-    // TODO Part C: Replace line 75 with throwing a new InvalidAddressError
-    // You can use line 39 as a reference.
-    // Pass in the address into the Error.
+    // TODO Part A: Replace line 78
+    // Throw an `ApplicationFailure` if the postal code is not valid
+    // Or if the address has special characters.
+    // Follow the pattern you see on line 38.
     log.error('invalid address');
   }
 
@@ -85,9 +89,10 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    // TODO Part C: Replace line 91 with throwing a new CreditCardNumberError
-    // You can use line 39 as a reference.
-    // Pass in the creditCardNumber into the Error.
+    // TODO Part A: Replace line 96
+    // Throw an `ApplicationFailure` if the
+    // credit card number does not have 16 digits.
+    // Follow the pattern you see on line 38.
     log.error('invalid credit card number');
   }
 

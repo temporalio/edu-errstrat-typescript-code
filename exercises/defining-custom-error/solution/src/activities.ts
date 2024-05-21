@@ -1,12 +1,5 @@
-import {
-  Address,
-  Bill,
-  CreditCardNumberError,
-  Distance,
-  InvalidAddressError,
-  InvalidChargeError,
-  OrderConfirmation,
-} from './shared';
+import { Address, Bill, Distance, OrderConfirmation } from './shared';
+import { ApplicationFailure } from '@temporalio/common';
 import { log } from '@temporalio/activity';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -43,7 +36,10 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    throw new InvalidChargeError(chargeAmount);
+    throw ApplicationFailure.create({
+      message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
+      details: [chargeAmount],
+    });
   }
 
   // pretend we called a payment processing service here :-)
@@ -76,7 +72,12 @@ export async function validateAddress(address: Address): Promise<void> {
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {
-    throw new InvalidAddressError(address);
+    throw ApplicationFailure.create({
+      message: `Invalid address: ${JSON.stringify(
+        address
+      )}: (postal code must be 5 digits and no special characters in address fields)`,
+      details: [address],
+    });
   }
 
   log.info('validateAddress complete', { Address: address });
@@ -86,11 +87,14 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   log.info('validateCreditCard invoked', { CreditCardNumber: creditCardNumber });
 
   // Check if the credit card number has 16 digits
-  const isValid = creditCardNumber.length == 16;
+  const isValid = /^[0-9]{16}$/.test(creditCardNumber);
 
   if (!isValid) {
-    throw new CreditCardNumberError(creditCardNumber);
+    throw ApplicationFailure.create({
+      message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
+      details: [creditCardNumber],
+    });
   }
 
-  log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });
+  log.info('validateCreditCard complete', { CreditCardNumber: creditCardNumber });
 }

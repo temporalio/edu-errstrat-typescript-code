@@ -88,7 +88,7 @@ In this part of the exercise, you will call the `compensate` function that you d
 3. In the `try/catch` block of your calling of `sendBill` Activity, call `await compensate(compensations)`. Now if `sendBill` fails, first we roll back on `sendBill` by calling `refundCustomer`. Next, we will roll back on `updateInventory` by calling `revertInventory`.
 4. Save the file.
 
-## Part G: Call your TestError
+## Part G: Call Your TestError
 
 In this part of the exercise, you will throw the TestError that you created in Part A. This way, we can test the rollback of your Activities.
 
