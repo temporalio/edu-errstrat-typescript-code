@@ -113,7 +113,6 @@ export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<voi
   try {
     const response = await axios.get(url);
     const content = response.data;
-    log.info('MY CONTENTTT', content);
     log.info(`External delivery driver assigned from: ${content.service}`);
   } catch (error: any) {
     if (error.response) {
