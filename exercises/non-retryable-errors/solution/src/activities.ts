@@ -1,14 +1,6 @@
-import {
-  Address,
-  Bill,
-  CreditCardNumberError,
-  Distance,
-  InvalidAddressError,
-  InvalidChargeError,
-  OrderConfirmation,
-  FetchingInternalDriverError,
-} from './shared';
+import { Address, Bill, Distance, OrderConfirmation } from './shared';
 import axios from 'axios';
+import { ApplicationFailure } from '@temporalio/common';
 import { log } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
 
@@ -46,7 +38,11 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    throw new InvalidChargeError(chargeAmount);
+    throw ApplicationFailure.create({
+      nonRetryable: true,
+      message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
+      details: [chargeAmount],
+    });
   }
 
   // pretend we called a payment processing service here :-)
@@ -79,9 +75,14 @@ export async function validateAddress(address: Address): Promise<void> {
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {
-    throw new InvalidAddressError(address);
+    throw ApplicationFailure.create({
+      nonRetryable: true,
+      message: `Invalid address: ${JSON.stringify(
+        address
+      )}: (postal code must be 5 digits and no special characters in address fields)`,
+      details: [address],
+    });
   }
-
   log.info('validateAddress complete', { Address: address });
 }
 
@@ -92,7 +93,11 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    throw new CreditCardNumberError(creditCardNumber);
+    throw ApplicationFailure.create({
+      nonRetryable: true,
+      message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
+      details: [creditCardNumber],
+    });
   }
 
   log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });
@@ -101,7 +106,10 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
 export async function notifyInternalDeliveryDriver(order: PizzaOrder): Promise<void> {
   log.info('notifyInternalDeliveryDriver invoked', { Order: order });
   // Simulate that the internal driver is not available
-  throw new FetchingInternalDriverError();
+  throw ApplicationFailure.create({
+    message: `Error fetching internal driver`,
+    details: [order],
+  });
 }
 
 // If an internal driver is not available, we poll the externalDeliveryDriver service

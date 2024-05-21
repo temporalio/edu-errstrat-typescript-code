@@ -1,15 +1,7 @@
-import {
-  Address,
-  Bill,
-  CreditCardNumberError,
-  Distance,
-  InvalidAddressError,
-  InvalidChargeError,
-  OrderConfirmation,
-  PizzaOrder,
-  // TODO Part G: Import TestError
-} from './shared';
+import { Address, Bill, Distance, OrderConfirmation } from './shared';
+import { ApplicationFailure } from '@temporalio/common';
 import { log } from '@temporalio/activity';
+import { PizzaOrder } from './shared';
 
 export async function getDistance(address: Address): Promise<Distance> {
   log.info('getDistance invoked; determining distance to customer address');
@@ -32,8 +24,11 @@ export async function getDistance(address: Address): Promise<Distance> {
 }
 
 export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
-  // TODO Part G: Throw a new Test Error.
   log.info('sendBill invoked', { Customer: bill.customerID, Amount: bill.amount });
+
+  // TODO Part A: Create a Test Error.
+  // Throw an Application Failure that is nonRetryable.
+  // The message should just say `Test Error`.
 
   let chargeAmount = bill.amount;
 
@@ -46,7 +41,11 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    throw new InvalidChargeError(chargeAmount);
+    throw ApplicationFailure.create({
+      nonRetryable: true,
+      message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
+      details: [chargeAmount],
+    });
   }
 
   // pretend we called a payment processing service here :-)
@@ -79,9 +78,14 @@ export async function validateAddress(address: Address): Promise<void> {
   );
 
   if (!isPostalCodeValid || hasSpecialChars) {
-    throw new InvalidAddressError(address);
+    throw ApplicationFailure.create({
+      nonRetryable: true,
+      message: `Invalid address: ${JSON.stringify(
+        address
+      )}: (postal code must be 5 digits and no special characters in address fields)`,
+      details: [address],
+    });
   }
-
   log.info('validateAddress complete', { Address: address });
 }
 
@@ -92,7 +96,11 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    throw new CreditCardNumberError(creditCardNumber);
+    throw ApplicationFailure.create({
+      nonRetryable: true,
+      message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
+      details: [creditCardNumber],
+    });
   }
 
   log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });

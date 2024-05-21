@@ -1,14 +1,13 @@
 import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
 import { compensate, errorMessage } from './compensationUtils';
-import { Distance, PizzaOrder, OutOfServiceAreaError, OrderConfirmation, Compensation } from './shared';
+import { Distance, PizzaOrder, OrderConfirmation, Compensation } from './shared';
 
 const { sendBill, getDistance, validateAddress, validateCreditCard, refundCustomer, updateInventory, revertInventory } =
   proxyActivities<typeof activities>({
     startToCloseTimeout: '5 seconds',
     retry: {
       maximumInterval: '10 seconds',
-      nonRetryableErrorTypes: ['CreditCardNumberError', 'InvalidAddressError', 'InvalidChargeError', 'TestError'],
     },
   });
 
@@ -37,7 +36,10 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
       throw e;
     }
     if (distance.kilometers > 25) {
-      throw new OutOfServiceAreaError();
+      throw ApplicationFailure.create({
+        message: 'Customer lives too far away for delivery',
+        details: [distance.kilometers],
+      });
     }
   }
 

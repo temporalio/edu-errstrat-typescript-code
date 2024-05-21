@@ -1,15 +1,6 @@
-import {
-  proxyActivities,
-  ApplicationFailure,
-  ActivityFailure,
-  log,
-  sleep,
-  defineSignal,
-  setHandler,
-  condition,
-} from '@temporalio/workflow';
+import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
-import { Distance, OrderConfirmation, PizzaOrder, OutOfServiceAreaError } from './shared';
+import { Distance, OrderConfirmation, PizzaOrder } from './shared';
 
 const {
   sendBill,
@@ -25,15 +16,11 @@ const {
     backoffCoefficient: 1.0,
     maximumInterval: '1 second',
     maximumAttempts: 5,
-    nonRetryableErrorTypes: ['CreditCardNumberError', 'InvalidAddressError', 'InvalidChargeError'],
   },
 });
 
-export const pollExternalDriverSignal = defineSignal<[void]>('pollExternalDriver');
-
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let totalPrice = 0;
-  let signalProcessed = false;
 
   // Validate the address
   try {
@@ -56,7 +43,10 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
       throw e;
     }
     if (distance.kilometers > 25) {
-      throw new OutOfServiceAreaError();
+      throw ApplicationFailure.create({
+        message: 'Customer lives too far away for delivery',
+        details: [distance.kilometers],
+      });
     }
   }
 

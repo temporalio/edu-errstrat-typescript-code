@@ -1,5 +1,3 @@
-import { ApplicationFailure } from '@temporalio/common';
-
 export const TASK_QUEUE_NAME = 'pizza-tasks';
 
 export interface Address {
