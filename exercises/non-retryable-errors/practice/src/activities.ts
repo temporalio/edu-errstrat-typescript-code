@@ -120,6 +120,12 @@ export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<voi
   try {
     const response = await axios.get(url);
     const content = response.data;
+    if (response.status >= 500 || response.status == 403) {
+      // TODO Part A: Skip polling if status code is in the 500s or 403
+      // Throw a new `Application Failure` with a message that lets
+      // The user know that there is an invalid server error.
+      // Set the `nonRetryable` key to true.
+    }
     log.info(`External delivery driver assigned from: ${content.service}`);
   } catch (error: any) {
     if (error.response) {

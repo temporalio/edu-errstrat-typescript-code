@@ -21,7 +21,8 @@ In this part of the exercise, we will take the Application Failures we defined i
 
 1. Edit `activities.ts`.
 2. In the `ApplicationFailure` that you create in the `sendBill`, `validateAddress` and `validateCreditCard` Activities, add a `nonRetryable` key and set it to `true` in the list of parameters that you add into the object. Now, when these errors are thrown from an Activity, the Activity will not be retried.
-3. Save your file.
+3. We also want to configure the `pollExternalDeliveryDriver` Activity. This Activity polls an external service. If that service returns a status code of 500s or 403, we don't want to retry polling this service. Within this Activity, within the `if` statement that checks the status code, throw a new `Application Failure` with a message that lets the user know that there is an invalid server error. Set this Application Failure's `nonRetryable` key to true.
+4. Save your file.
 
 ## Part B: Configure Retry Policies of an Error
 
