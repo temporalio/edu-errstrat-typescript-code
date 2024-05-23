@@ -2,8 +2,7 @@
 
 During this exercise, you will:
 
-- Define, throw, and handle Custom errors in Temporal Workflows and Activities
-- Handle Activity failures in errors
+- Define, throw, and handle errors in Temporal Workflows and Activities
 
 Make your changes to the code in the `practice` subdirectory (look for `TODO` comments that will guide you to where you should make changes to the code). If you need a hint or want to verify your changes, look at the complete version in the `solution` subdirectory.
 
