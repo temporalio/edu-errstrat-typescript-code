@@ -11,11 +11,12 @@ const {
   pollExternalDeliveryDriver,
 } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
+  heartbeatTimeout: '10 seconds',
   retry: {
     initialInterval: '1 second',
     backoffCoefficient: 1.0,
     maximumInterval: '1 second',
-    maximumAttempts: 5
+    maximumAttempts: 5,
   },
 });
 

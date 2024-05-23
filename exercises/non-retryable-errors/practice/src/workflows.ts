@@ -11,6 +11,8 @@ const {
   pollExternalDeliveryDriver,
 } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
+  // TODO Part D: Add a heartbeatTimeout
+  // Set it to ten seconds.
   retry: {
     // TODO Part B: Add in the values for
     // `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts`

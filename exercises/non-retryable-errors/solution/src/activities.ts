@@ -1,7 +1,7 @@
 import { Address, Bill, Distance, OrderConfirmation } from './shared';
 import axios from 'axios';
 import { ApplicationFailure } from '@temporalio/common';
-import { log } from '@temporalio/activity';
+import { log, heartbeat, activityInfo } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -116,29 +116,42 @@ export async function notifyInternalDeliveryDriver(order: PizzaOrder): Promise<v
 export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<void> {
   log.info('pollExternalDeliveryDriver invoked', { Order: order });
 
+  // Allow for resuming from heartbeat
+  const startingPoint = activityInfo().heartbeatDetails || 1;
+
   const url = 'http://localhost:9998/getExternalDeliveryDriver';
 
-  try {
-    const response = await axios.get(url);
-    const content = response.data;
-    // Skips polling if status code is in the 500s or 403
-    if (response.status >= 500 || response.status == 403) {
-      throw ApplicationFailure.create({message: `Error. Status Code: ${response.status}`, nonRetryable: true})
-    }
-    log.info(`External delivery driver assigned from: ${content.service}`);
-  } catch (error: any) {
-    if (error.response) {
-      log.error('External delivery driver request failed:', {
-        status: error.response.status,
-        data: error.response.data,
-      });
-      throw new Error(`HTTP Error ${error.response.status}: ${error.response.data}`);
-    } else if (error.request) {
-      log.error('External delivery driver request failed:', { request: error.request });
-      throw new Error(`Request error: ${error.request}`);
-    } else {
-      log.error('Something else failed during polling external delivery driver.');
-      throw new Error('Something else failed during polling external delivery driver.');
+  log.info('Starting activity at progress', { startingPoint });
+  for (let progress = startingPoint; progress <= 10; progress++) {
+    try {
+      log.info('Polling external delivery driver...', { progress });
+      const response = await axios.get(url);
+      const content = response.data;
+      heartbeat(progress);
+
+      // Skips polling if status code is in the 500s or 403
+      if (response.status >= 500 || response.status == 403) {
+        throw ApplicationFailure.create({ message: `Error. Status Code: ${response.status}`, nonRetryable: true });
+      }
+
+      log.info(`External delivery driver assigned from: ${content.service}`);
+
+      // Break the loop if the response is successful
+      break;
+    } catch (error: any) {
+      if (error.response) {
+        log.error('External delivery driver request failed:', {
+          status: error.response.status,
+          data: error.response.data,
+        });
+        throw new Error(`HTTP Error ${error.response.status}: ${error.response.data}`);
+      } else if (error.request) {
+        log.error('External delivery driver request failed:', { request: error.request });
+        throw new Error(`Request error: ${error.request}`);
+      } else {
+        log.error('Something else failed during polling external delivery driver.');
+        throw new Error('Something else failed during polling external delivery driver.');
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Address, Bill, Distance, OrderConfirmation } from './shared';
 import axios from 'axios';
 import { ApplicationFailure } from '@temporalio/common';
+// TODO Part C: Add `heartbeat` and `activityInfo` into `@temporalio/activity` imports.
 import { log } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
 
@@ -115,11 +116,24 @@ export async function notifyInternalDeliveryDriver(order: PizzaOrder): Promise<v
 export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<void> {
   log.info('pollExternalDeliveryDriver invoked', { Order: order });
 
+  // Allow for resuming from heartbeat
+  const startingPoint = activityInfo().heartbeatDetails || 1;
+
   const url = 'http://localhost:9998/getExternalDeliveryDriver';
 
+  // TODO Part C: Add the entire try/catch block into a for loop
+  // When initiating the loop, it should initiate
+  // at `let progress = startingPoint`
+  // The loop should iterate up to ten times, one by one.
+
   try {
+    log.info('Polling external delivery driver...', { progress });
     const response = await axios.get(url);
     const content = response.data;
+
+    //TODO Part C: Call `heartbeat()`
+    // The `heartbeat()` function should take in `progress`.
+
     if (response.status >= 500 || response.status == 403) {
       // TODO Part A: Skip polling if status code is in the 500s or 403
       // Throw a new `Application Failure` with a message that lets
@@ -127,6 +141,9 @@ export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<voi
       // Set the `nonRetryable` key to true.
     }
     log.info(`External delivery driver assigned from: ${content.service}`);
+
+    // TODO Part C: Add a break statement so that
+    // we don't keep polling if the response is successful.
   } catch (error: any) {
     if (error.response) {
       log.error('External delivery driver request failed:', {
