@@ -15,7 +15,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    // TODO Part B: Following line 31 as an example
+    // TODO Part B: Fill out the message and details
     log.error(`Invalid credit card number`);
     throw ApplicationFailure.create({
       message: '',

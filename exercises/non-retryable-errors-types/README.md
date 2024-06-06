@@ -23,7 +23,6 @@ In this part of the exercise, we will take the Application Failures we defined i
 1. Notice in `shared.ts`, there are already two custom defined errors: `InvalidChargeAmount` and `InvalidCreditCardErr`. These will be the error types that we will say are nonRetryable.
 2. Edit `activities.ts`. At the top of the file, import `InvalidChargeAmount` and `InvalidCreditCardErr` from `shared.ts`.
 3. In the `validateCreditCard` Activity, replace the Application Failure with throwing a new `InvalidCreditCardErr`.
-4. Save your `activities.ts` file.
 
 ## Part B: Configure Retry Policies of an Error
 
@@ -37,7 +36,6 @@ In this part of the exercise, we will configure the retry policies of an error.
 1. Edit `workflows.ts`.
 2. We want to set the retry policy to retry once per second for five seconds for simplicity's sake. In the `retry` object of your `proxyActivities`, add in the values for `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts` that would allow for this.
 3. So that we don't retry any `InvalidChargeAmount` and `InvalidCreditCardErr` Error types, add a `nonRetryableErrorTypes` key in the `retry` configuration and set it to an array with those error types.
-4. Save your file.
 
 ## Part C: Add Heartbeats
 

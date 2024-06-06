@@ -65,7 +65,7 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    // TODO Part A: Replace line 71
+    // TODO Part A: Replace line 73
     // Throw an `ApplicationFailure` if the
     // credit card number does not have 16 digits.
     // Follow the pattern you see on line 39.
