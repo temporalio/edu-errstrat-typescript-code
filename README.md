@@ -11,11 +11,11 @@ For the exercises, make sure to run `temporal server start-dev --ui-port 8080 --
 
 ## Hands-On Exercises
 
-| Directory Name                    | Exercise                                                |
-| :-------------------------------- | :------------------------------------------------------ |
-| `exercises/defining-custom-errors` | [Exercise 1](exercises/defining-custom-errors/README.md) |
-| `exercises/non-retryable-errors`  | [Exercise 2](exercises/non-retryable-errors/README.md)  |
-| `exercises/rollback-with-saga`    | [Exercise 3](exercises/rollback-with-saga/README.md)    |
+| Directory Name                   | Exercise                                               |
+| :------------------------------- | :----------------------------------------------------- |
+| `exercises/handling-errors`      | [Exercise 1](exercises/handling-errors/README.md)      |
+| `exercises/non-retryable-errors` | [Exercise 2](exercises/non-retryable-errors/README.md) |
+| `exercises/rollback-with-saga`   | [Exercise 3](exercises/rollback-with-saga/README.md)   |
 
 ## Reference
 

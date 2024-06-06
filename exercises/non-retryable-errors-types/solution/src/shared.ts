@@ -1,5 +1,17 @@
 export const TASK_QUEUE_NAME = 'pizza-tasks';
 
+export class InvalidChargeAmount extends Error {
+  constructor() {
+    super('Invalid charge amount');
+  }
+}
+
+export class InvalidCreditCardErr extends Error {
+  constructor() {
+    super('Invalid Credit Card number');
+  }
+}
+
 export interface Address {
   line1: string;
   line2: string;

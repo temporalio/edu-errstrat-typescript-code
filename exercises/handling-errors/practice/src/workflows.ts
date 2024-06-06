@@ -4,13 +4,8 @@ import { proxyActivities, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
 import { Distance, OrderConfirmation, PizzaOrder } from './shared';
 
-const { sendBill, getDistance, validateAddress, validateCreditCard } = proxyActivities<typeof activities>({
-  retry: {
-    initialInterval: '1 second',
-    backoffCoefficient: 2.0,
-    maximumInterval: '1 second',
-    maximumAttempts: 6,
-  },
+const { sendBill, getDistance, validateCreditCard } = proxyActivities<typeof activities>({
+  startToCloseTimeout: '5 seconds',
 });
 
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
@@ -21,19 +16,11 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
     // TODO Part B: Following line 31 as an example
-    // Log the message of the error if there is an error thrown
-    // In the validateCreditCard Activity
-  }
-
-  // Validate the address
-  try {
-    await validateAddress(order.address);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating address: ${err}`);
-    }
+    log.error(`Invalid credit card number`);
+    throw ApplicationFailure.create({
+      message: '',
+      details: [],
+    });
   }
 
   if (order.isDelivery) {

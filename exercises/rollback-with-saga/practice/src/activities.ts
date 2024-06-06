@@ -63,32 +63,6 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
   return confirmation;
 }
 
-export async function validateAddress(address: Address): Promise<void> {
-  log.info('validateAddress invoked', { Address: address });
-
-  // Regular expression to check for special characters
-  const specialCharRegex = /[!@#$%^&*()?":{}|<>]/;
-
-  // Check if the zip code has exactly 5 characters
-  const isPostalCodeValid = address.postalCode.length == 5;
-
-  // Check if any address fields contain special characters
-  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(
-    (field) => field && specialCharRegex.test(field)
-  );
-
-  if (!isPostalCodeValid || hasSpecialChars) {
-    throw ApplicationFailure.create({
-      nonRetryable: true,
-      message: `Invalid address: ${JSON.stringify(
-        address
-      )}: (postal code must be 5 digits and no special characters in address fields)`,
-      details: [address],
-    });
-  }
-  log.info('validateAddress complete', { Address: address });
-}
-
 export async function validateCreditCard(creditCardNumber: string): Promise<void> {
   log.info('validateCreditCard invoked', { CreditCardNumber: creditCardNumber });
 

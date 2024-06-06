@@ -1,7 +1,7 @@
-import { Address, Bill, Distance, OrderConfirmation } from './shared';
+import { Address, Bill, Distance, OrderConfirmation, InvalidCreditCardErr, InvalidChargeAmount } from './shared';
 import axios from 'axios';
 import { ApplicationFailure } from '@temporalio/common';
-import { log, heartbeat, activityInfo } from '@temporalio/activity';
+import { log, heartbeat, activityInfo, sleep } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -38,11 +38,7 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    throw ApplicationFailure.create({
-      nonRetryable: true,
-      message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
-      details: [chargeAmount],
-    });
+      throw new InvalidChargeAmount();
   }
 
   // pretend we called a payment processing service here :-)
@@ -60,32 +56,6 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
   return confirmation;
 }
 
-export async function validateAddress(address: Address): Promise<void> {
-  log.info('validateAddress invoked', { Address: address });
-
-  // Regular expression to check for special characters
-  const specialCharRegex = /[!@#$%^&*()?":{}|<>]/;
-
-  // Check if the zip code has exactly 5 characters
-  const isPostalCodeValid = address.postalCode.length == 5;
-
-  // Check if any address fields contain special characters
-  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(
-    (field) => field && specialCharRegex.test(field)
-  );
-
-  if (!isPostalCodeValid || hasSpecialChars) {
-    throw ApplicationFailure.create({
-      nonRetryable: true,
-      message: `Invalid address: ${JSON.stringify(
-        address
-      )}: (postal code must be 5 digits and no special characters in address fields)`,
-      details: [address],
-    });
-  }
-  log.info('validateAddress complete', { Address: address });
-}
-
 export async function validateCreditCard(creditCardNumber: string): Promise<void> {
   log.info('validateCreditCard invoked', { CreditCardNumber: creditCardNumber });
 
@@ -93,28 +63,15 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    throw ApplicationFailure.create({
-      nonRetryable: true,
-      message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
-      details: [creditCardNumber],
-    });
+    throw new InvalidCreditCardErr();
   }
 
   log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });
 }
 
-export async function notifyInternalDeliveryDriver(order: PizzaOrder): Promise<void> {
-  log.info('notifyInternalDeliveryDriver invoked', { Order: order });
-  // Simulate that the internal driver is not available
-  throw ApplicationFailure.create({
-    message: `Error fetching internal driver`,
-    details: [order],
-  });
-}
-
-// If an internal driver is not available, we poll the externalDeliveryDriver service
-export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<void> {
-  log.info('pollExternalDeliveryDriver invoked', { Order: order });
+// If a driver is not available, we poll the Delivery Driver service
+export async function pollDeliveryDriver(order: PizzaOrder): Promise<void> {
+  log.info('pollDeliveryDriver invoked', { Order: order });
 
   // Allow for resuming from heartbeat
   const startingPoint = activityInfo().heartbeatDetails || 1;
@@ -128,10 +85,10 @@ export async function pollExternalDeliveryDriver(order: PizzaOrder): Promise<voi
       const response = await axios.get(url);
       const content = response.data;
       heartbeat(progress);
-
+      await sleep('20 seconds')
       // Skips polling if status code is in the 500s or 403
       if (response.status >= 500 || response.status == 403) {
-        throw ApplicationFailure.create({ message: `Error. Status Code: ${response.status}`, nonRetryable: true });
+        throw ApplicationFailure.create({ message: `Error. Status Code: ${response.status}` });
       }
 
       log.info(`External delivery driver assigned from: ${content.service}`);

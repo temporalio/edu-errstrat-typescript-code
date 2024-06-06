@@ -5,34 +5,22 @@ import { Distance, OrderConfirmation, PizzaOrder } from './shared';
 const {
   sendBill,
   getDistance,
-  validateAddress,
   validateCreditCard,
-  notifyInternalDeliveryDriver,
-  pollExternalDeliveryDriver,
+  pollDeliveryDriver,
 } = proxyActivities<typeof activities>({
-  startToCloseTimeout: '5 seconds',
-  heartbeatTimeout: '10 seconds',
+  startToCloseTimeout: '30 minutes',
+  heartbeatTimeout: '30 seconds',
   retry: {
     initialInterval: '1 second',
     backoffCoefficient: 1.0,
     maximumInterval: '1 second',
     maximumAttempts: 5,
+    nonRetryableErrorTypes: ['InvalidCreditCardErr', 'InvalidChargeAmount']
   },
 });
 
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let totalPrice = 0;
-
-  // Validate the address
-  try {
-    await validateAddress(order.address);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating address: ${err}`);
-    }
-  }
 
   if (order.isDelivery) {
     let distance: Distance | undefined = undefined;
@@ -78,15 +66,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
   try {
     await sendBill(bill);
-
-    // Tries to fetch an internal delivery driver
-    try {
-      await notifyInternalDeliveryDriver(order);
-    } catch (err) {
-      if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-        await pollExternalDeliveryDriver(order);
-      }
-    }
+    await pollDeliveryDriver(order);
 
     const orderConfirmation = {
       orderNumber: bill.orderNumber,

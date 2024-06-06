@@ -1,5 +1,5 @@
-// TODO Part A: Import `ApplicationFailure` from `@temporalio/common`
 import { Address, Bill, Distance, OrderConfirmation } from './shared';
+import { ApplicationFailure } from '@temporalio/common';
 import { log } from '@temporalio/activity';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -39,6 +39,7 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
     throw ApplicationFailure.create({
       message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
       details: [chargeAmount],
+      nonRetryable: true
     });
   }
 
@@ -57,44 +58,19 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
   return confirmation;
 }
 
-export async function validateAddress(address: Address): Promise<void> {
-  log.info('validateAddress invoked', { Address: address });
-
-  // Regular expression to check for special characters
-  const specialCharRegex = /[!@#$%^&*()?":{}|<>]/;
-
-  // Check if the zip code has exactly 5 characters
-  const isPostalCodeValid = address.postalCode.length == 5;
-
-  // Check if any address fields contain special characters
-  const hasSpecialChars = [address.line1, address.line2, address.city, address.state].some(
-    (field) => field && specialCharRegex.test(field)
-  );
-
-  if (!isPostalCodeValid || hasSpecialChars) {
-    // TODO Part A: Replace line 78
-    // Throw an `ApplicationFailure` if the postal code is not valid
-    // Or if the address has special characters.
-    // Follow the pattern you see on line 38.
-    log.error('invalid address');
-  }
-
-  log.info('validateAddress complete', { Address: address });
-}
-
 export async function validateCreditCard(creditCardNumber: string): Promise<void> {
   log.info('validateCreditCard invoked', { CreditCardNumber: creditCardNumber });
 
   // Check if the credit card number has 16 digits
-  const isValid = creditCardNumber.length == 16;
+  const isValid = /^[0-9]{16}$/.test(creditCardNumber);
 
   if (!isValid) {
-    // TODO Part A: Replace line 96
-    // Throw an `ApplicationFailure` if the
-    // credit card number does not have 16 digits.
-    // Follow the pattern you see on line 38.
-    log.error('invalid credit card number');
+    throw ApplicationFailure.create({
+      message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
+      details: [creditCardNumber],
+      nonRetryable: true
+    });
   }
 
-  log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });
+  log.info('validateCreditCard complete', { CreditCardNumber: creditCardNumber });
 }

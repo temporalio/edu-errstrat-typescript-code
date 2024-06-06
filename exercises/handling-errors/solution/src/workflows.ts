@@ -2,14 +2,8 @@ import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from
 import type * as activities from './activities';
 import { Distance, OrderConfirmation, PizzaOrder} from './shared';
 
-const { sendBill, getDistance, validateAddress, validateCreditCard } = proxyActivities<typeof activities>({
+const { sendBill, getDistance, validateCreditCard } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
-  retry: {
-    initialInterval: '1 second',
-    backoffCoefficient: 2.0,
-    maximumInterval: '1 second',
-    maximumAttempts: 6,
-  },
 });
 
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
@@ -19,22 +13,11 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating credit card number: ${err}`);
-    }
-  }
-
-  // Validate the address
-  try {
-    await validateAddress(order.address);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating address: ${err}`);
-    }
+    log.error(`Invalid credit card number`);
+    throw ApplicationFailure.create({
+      message: 'Invalid credit card number',
+      details: [order.customer.creditCardNumber],
+    });
   }
 
   if (order.isDelivery) {

@@ -41,7 +41,7 @@ function createPizzaOrder(): PizzaOrder {
   // Invalid address:
   const address = {
     line1: '701 Mission Street',
-    line2: 'thisisinvalidthisisinvalidthisisinvalidthisisinvalidthisisinvalidthisinvalid',
+    line2: 'test',
     city: 'San Francisco',
     state: 'CA',
     postalCode: '94103',

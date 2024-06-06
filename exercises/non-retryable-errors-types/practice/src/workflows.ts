@@ -5,19 +5,20 @@ import { Distance, OrderConfirmation, PizzaOrder } from './shared';
 const {
   sendBill,
   getDistance,
-  validateAddress,
   validateCreditCard,
-  notifyInternalDeliveryDriver,
-  pollExternalDeliveryDriver,
+  pollDeliveryDriver,
 } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
   // TODO Part D: Add a heartbeatTimeout
-  // Set it to ten seconds.
+  // Set it to thirty seconds.
   retry: {
     // TODO Part B: Add in the values for
     // `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts`
     // to allow for the retry of these Activities to be
     // once per second for five seconds
+    // Add in a nonRetryableErrorTypes key
+    // Set it to an array with 
+    // `InvalidCreditCardErr` and `InvalidChargeAmount`.
   },
 });
 
@@ -79,15 +80,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
   try {
     await sendBill(bill);
-
-    // Tries to fetch an internal delivery driver
-    try {
-      await notifyInternalDeliveryDriver(order);
-    } catch (err) {
-      if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-        await pollExternalDeliveryDriver(order);
-      }
-    }
+    await pollExternalDeliveryDriver(order);
 
     const orderConfirmation = {
       orderNumber: bill.orderNumber,
