@@ -3,7 +3,7 @@ import type * as activities from './activities';
 import { compensate, errorMessage } from './compensationUtils';
 import { Distance, PizzaOrder, OrderConfirmation, Compensation } from './shared';
 
-const { sendBill, getDistance, validateAddress, validateCreditCard, refundCustomer, updateInventory, revertInventory } =
+const { sendBill, getDistance, validateCreditCard, refundCustomer, updateInventory, revertInventory } =
   proxyActivities<typeof activities>({
     startToCloseTimeout: '5 seconds',
     retry: {
@@ -14,18 +14,7 @@ const { sendBill, getDistance, validateAddress, validateCreditCard, refundCustom
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let compensations: Compensation[] = [];
   let totalPrice = 0;
-
-  // Validate the address
-  try {
-    await validateAddress(order.address);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating address: ${err}`);
-    }
-  }
-
+  
   if (order.isDelivery) {
     let distance: Distance | undefined = undefined;
 

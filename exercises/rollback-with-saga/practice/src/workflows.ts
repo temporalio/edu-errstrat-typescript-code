@@ -7,7 +7,7 @@ import { Distance, PizzaOrder, OrderConfirmation } from './shared';
 
 // TODO Part B: Add `refundCustomer` and `revertInventory`
 // into `proxyActivities`.
-const { sendBill, getDistance, validateAddress, validateCreditCard, updateInventory } = proxyActivities<
+const { sendBill, getDistance, validateCreditCard, updateInventory } = proxyActivities<
   typeof activities
 >({
   startToCloseTimeout: '5 seconds',
@@ -19,17 +19,6 @@ const { sendBill, getDistance, validateAddress, validateCreditCard, updateInvent
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let compensations: Compensation[] = [];
   let totalPrice = 0;
-
-  // Validate the address
-  try {
-    await validateAddress(order.address);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating address: ${err}`);
-    }
-  }
 
   if (order.isDelivery) {
     let distance: Distance | undefined = undefined;

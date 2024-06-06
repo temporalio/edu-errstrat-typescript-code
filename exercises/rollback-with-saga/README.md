@@ -75,7 +75,6 @@ Then, if `sendBill` throws an error, we call the `compensate` function which rol
 5. At this point, as you go through the pizza Workflow, your `compensations` array should look like this: `[
   { message: 'reversing send bill: ', fn: refundCustomer },
   { message: 'reversing update inventory: ', fn: revertInventory }
-]`.
 
 ## Part F: Call the `compensate` Function
 

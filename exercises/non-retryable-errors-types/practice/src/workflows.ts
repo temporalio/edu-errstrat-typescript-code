@@ -25,17 +25,6 @@ const {
 export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmation> {
   let totalPrice = 0;
 
-  // Validate the address
-  try {
-    await validateAddress(order.address);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating address: ${err}`);
-    }
-  }
-
   if (order.isDelivery) {
     let distance: Distance | undefined = undefined;
 
@@ -80,7 +69,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
   try {
     await sendBill(bill);
-    await pollExternalDeliveryDriver(order);
+    await pollDeliveryDriver(order);
 
     const orderConfirmation = {
       orderNumber: bill.orderNumber,
