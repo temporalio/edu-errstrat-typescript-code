@@ -15,7 +15,7 @@ const {
     backoffCoefficient: 1.0,
     maximumInterval: '1 second',
     maximumAttempts: 5,
-    nonRetryableErrorTypes: ['InvalidCreditCardErr', 'InvalidChargeAmount']
+    nonRetryableErrorTypes: ['InvalidCreditCardErr', 'InvalidChargeAmountErr']
   },
 });
 

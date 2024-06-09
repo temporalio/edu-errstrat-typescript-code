@@ -23,8 +23,8 @@ Application Failures are used to communicate application-specific failures in Wo
 
 1. Edit the `activities.ts` file.
 2. Import `ApplicationFailure` from `@temporalio/common`.
-3. In the `sendBill` Activity, notice how we throw an error on line 38. If the charged amount is a negative amount, we throw an Application Failure. The Application Failure includes a message as well as a details array with a list of details pertaining to the failure. Since we want our custom error data to be serialized and transmitted over the network, we must set our custom data in the `details` field. 
-4. Go to line 61, the `validateCreditCard` Activity. We want to throw an error if the entered credit card number does not have 16 digits. Replace the logged error on line 73 with your own `ApplicationFailure`, following the pattern you saw in step 3.
+3. In the `sendBill` Activity, notice how we throw an error if there is a charge that is negative. If the charged amount is a negative amount, we throw an Application Failure. The Application Failure includes a message as well as a details array with a list of details pertaining to the failure. Since we want our custom error data to be serialized and transmitted over the network, we must set our custom data in the `details` field. 
+4. Go to the `validateCreditCard` Activity. We want to throw an error if the entered credit card number does not have 16 digits. Replace the logged error with your own `ApplicationFailure`, following the pattern you saw in step 3.
 
 ## Part B: Throw the Activity Failures in Your Workflow
 
@@ -32,7 +32,7 @@ In this part of the exercise, you will throw your Activity Failures that will fa
 
 1. Edit the `workflows.ts` file.
 2. Add `ApplicationFailure` and `ActivityFailure` in your imports from `@temporalio/workflow` at the top of your file.
-3. Look at the call to the `validateCreditCard` Activity. We want to throw an `ApplicationFailure` if there is a problem with the credit card number. Fill in the `message` key with the log message in line 18. Fill in the `details` array with `creditCardNumber`, which is passed into the `validateCreditCard` Activity.
+3. Look at the call to the `validateCreditCard` Activity. We want to throw an `ApplicationFailure` if there is a problem with the credit card number. Fill in the `message` key that is supplied in the log message. Fill in the `details` array with `creditCardNumber`, which is passed into the `validateCreditCard` Activity.
 4. Right now, if we have an Activity that has an invalid credit card number, the Activity will fail, but not the Workflow Execution. However, if we would like the failed Activity to fail the Workflow Execution, we need to make the Activity nonRetryable.
 5. In `activities.ts`, add a `nonRetryable` key in the object passed into `ApplicationFailure`. Set this key to `true`. Save your file. Now if this Activity fails, the Workflow Execution will also fail.
 6. Save your file.
@@ -42,7 +42,7 @@ In this part of the exercise, you will throw your Activity Failures that will fa
 In this part of the exercise, you will throw your error that will fail your Workflow Execution. Remember that in Workflows, if you throw an `ApplicationFailure`, the Workflow Execution will fail. 
 
 1. Edit the `workflows.ts` file.
-2. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers (line 35), throw an `ApplicationFailure`.
+2. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers, throw an `ApplicationFailure`.
 3. Save your file.
 
 ## Part D: Run the Workflow

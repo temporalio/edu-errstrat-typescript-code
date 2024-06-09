@@ -1,4 +1,4 @@
-import { Address, Bill, Distance, OrderConfirmation, InvalidCreditCardErr, InvalidChargeAmount } from './shared';
+import { Address, Bill, Distance, OrderConfirmation} from './shared';
 import axios from 'axios';
 import { ApplicationFailure } from '@temporalio/common';
 import { log, heartbeat, activityInfo, sleep } from '@temporalio/activity';
@@ -38,7 +38,11 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-      throw new InvalidChargeAmount();
+    throw ApplicationFailure.create({
+      type: 'InvalidChargeAmountErr',
+      message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
+      details: [chargeAmount],
+    });
   }
 
   // pretend we called a payment processing service here :-)
@@ -63,7 +67,11 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    throw new InvalidCreditCardErr();
+    throw ApplicationFailure.create({
+      type: 'InvalidCreditCardErr',
+      message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
+      details: [creditCardNumber],
+    });
   }
 
   log.info('Credit card validated:', { CreditCardNumber: creditCardNumber });

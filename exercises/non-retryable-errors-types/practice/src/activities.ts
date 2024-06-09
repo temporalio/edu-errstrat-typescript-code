@@ -1,5 +1,3 @@
-// TODO Part A: Add InvalidChargeAmount and InvalidCreditCardErr
-// From your shared imports.
 import { Address, Bill, Distance, OrderConfirmation } from './shared';
 import axios from 'axios';
 import { ApplicationFailure } from '@temporalio/common';
@@ -41,8 +39,7 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    // TODO Part A: Remove the ApplicationFailure below
-    // Replace it with `InvalidChargeAmount`.
+    // TODO Part A: Add a `type` key and set it to 'InvalidChargeAmountErr'.
     throw ApplicationFailure.create({
       message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
       details: [chargeAmount],
@@ -71,8 +68,7 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
-    // TODO Part A Remove the ApplicationFailure and
-    // Replace it with throwing `InvalidCreditCardErr`.
+    // TODO Part A: Add a `type` key and set it to 'InvalidCreditCardErr'.
     throw ApplicationFailure.create({
       message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
       details: [creditCardNumber],

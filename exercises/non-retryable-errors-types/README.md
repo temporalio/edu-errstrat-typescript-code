@@ -20,9 +20,8 @@ You'll need two terminal windows for this exercise.
 
 In this part of the exercise, we will take the Application Failures we defined in the first exercise (Handling Errors) and remove the `nonRetryable` flag and add error types into a list of error types we don't want to retry instead.
 
-1. Notice in `shared.ts`, there are already two custom defined errors: `InvalidChargeAmount` and `InvalidCreditCardErr`. These will be the error types that we will say are nonRetryable.
-2. Edit `activities.ts`. At the top of the file, import `InvalidChargeAmount` and `InvalidCreditCardErr` from `shared.ts`.
-3. In the `validateCreditCard` Activity, replace the Application Failure with throwing a new `InvalidCreditCardErr`.
+1. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid error. We want to make this an error type that we don't retry on. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'.
+2. In the `sendBill` Activity, we also threw an `ApplicationFailure` if the charge amount is negative. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidChargeAmountErr'.
 
 ## Part B: Configure Retry Policies of an Error
 
@@ -35,7 +34,7 @@ In this part of the exercise, we will configure the retry policies of an error.
 
 1. Edit `workflows.ts`.
 2. We want to set the retry policy to retry once per second for five seconds for simplicity's sake. In the `retry` object of your `proxyActivities`, add in the values for `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts` that would allow for this.
-3. So that we don't retry any `InvalidChargeAmount` and `InvalidCreditCardErr` Error types, add a `nonRetryableErrorTypes` key in the `retry` configuration and set it to an array with those error types.
+3. So that we don't retry any `InvalidChargeAmountErr` and `InvalidCreditCardErr` Error types, add a `nonRetryableErrorTypes` key in the `retry` configuration and set it to an array with those error types. Now, if those Activities throw these error types, they will not retry.
 
 ## Part C: Add Heartbeats
 

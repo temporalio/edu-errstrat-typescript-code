@@ -29,7 +29,7 @@ run().catch((err) => {
 function createPizzaOrder(): PizzaOrder {
   const customer = {
     customerID: 12983,
-    creditCardNumber: '1234567890abcdef',
+    creditCardNumber: '1234567890abcdeffff',
     name: 'María García',
     email: 'maria1985@example.com',
     phone: '415-555-7418',
