@@ -69,6 +69,7 @@ export async function validateCreditCard(creditCardNumber: string): Promise<void
 
   if (!isValid) {
     // TODO Part A: Add a `type` key and set it to 'InvalidCreditCardErr'.
+    // Remove the `nonRetryable` key.
     throw ApplicationFailure.create({
       message: `Invalid credit card number: ${creditCardNumber}: (must contain exactly 16 digits)`,
       details: [creditCardNumber],

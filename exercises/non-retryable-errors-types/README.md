@@ -20,7 +20,8 @@ You'll need two terminal windows for this exercise.
 
 In this part of the exercise, we will take the Application Failures we defined in the first exercise (Handling Errors) and remove the `nonRetryable` flag and add error types into a list of error types we don't want to retry instead.
 
-1. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid error. We want to make this an error type that we don't retry on. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'.
+1. Edit `activities.ts`.
+2. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid error. We want to make this an error type that we don't retry on instead of just specifying this specific Error as non retriable. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'. Remove the `nonRetryable` key.
 2. In the `sendBill` Activity, we also threw an `ApplicationFailure` if the charge amount is negative. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidChargeAmountErr'.
 
 ## Part B: Configure Retry Policies of an Error
@@ -40,17 +41,18 @@ In this part of the exercise, we will configure the retry policies of an error.
 
 In this part of the exercise, we will add heartbeating to our `pollDeliveryDriver` Activity.
 
-1. Edit `activities.ts`. We have added a `pollDeliveryDriver` Activity. This Activity polls an external service. If that service returns a status code of 500s or 403, we don't want to retry polling this service. Within this Activity, within the `if` statement that checks the status code, throw a new `Application Failure` with a message that lets the user know that there is an invalid server error. Set this Application Failure's `nonRetryable` key to true.
+1. Edit `activities.ts`. We have added a `pollDeliveryDriver` Activity. This Activity polls an external service for delivery drivers. If that service returns a status code of 500s or 403, we don't want to retry polling this service. Within this Activity, within the `if` statement that checks the status code, throw a new `Application Failure` with a message that lets the user know that there is an invalid server error. Set this Application Failure's `nonRetryable` key to true.
 2. Now, let's add heartbeating. Import `heartbeat` and `activityInfo` from `@temporalio/activity`.
 3. In the `pollExternalDeliveryDriver` Activity, notice that we have a `startingPoint` variable. This variable is set to the resuming point that the heartbeat last left off of, or 1, if the heartbeating has not began.
-4. Add your entire `try/catch` block into a `for loop`. When initiating the loop, it should initiate at `let progress = startingPoint`, this way, the progress will increment each iteration of the loop. The loop should iterate up to ten times, one by one. This loop will simulate multiple attempts to poll an external service (e.g., DoorDash, UberEats) to find an available delivery driver.
+4. Add your entire `try/catch` block into a `for loop`. When initiating the loop, it should initiate at `let progress = startingPoint` and the progress should increment by one after each iteration of the loop. The loop should iterate up to ten times, one by one. This loop will simulate multiple attempts to poll an external service (e.g., DoorDash, UberEats) to find an available delivery driver.
 5. Call `heartbeat()` within the `for loop` so it invokes in each iteration of the loop. The `heartbeat` function should take in `progress`.
 6. Add a break statement after 'log.info(`External delivery driver assigned from: ${content.service}`)', so that we don't keep polling if the response is successful.
 7. Save your file. 
 
 ## Part D: Add a Heartbeat Timeout
 
-In this part of the exercise, we will add a Heartbeat Timeout to your Activities.
+In this part of the exercise, we will add a Heartbeat Timeout to your Activities. If a heartbeat timeout is not set, Temporal doesn't track the heartbeat signals
+sent by the activity. 
 
 1. Edit `workflows.ts`.
 2. Below the `startToCloseTimeout`, add a `heartbeatTimeout` and set it to thirty seconds. This sets the maximum time between Activity Heartbeats. If an Activity times out (e.g., due to a missed Heartbeat), the next attempt can use this payload to continue from where it left off.

@@ -30,9 +30,11 @@ Application Failures are used to communicate application-specific failures in Wo
 
 In this part of the exercise, you will throw your Activity Failures that will fail your Workflow Executions.
 
+When there is an error in an Activity, the failure is wrapped in an `ActivityFailure` and propagated back to the Workflow.This allows the Workflow to be aware of the failure and handle it appropriately. In the Workflow, this failure can be caught and handled using standard try-catch mechanisms.
+
 1. Edit the `workflows.ts` file.
 2. Add `ApplicationFailure` and `ActivityFailure` in your imports from `@temporalio/workflow` at the top of your file.
-3. Look at the call to the `validateCreditCard` Activity. We want to throw an `ApplicationFailure` if there is a problem with the credit card number. Fill in the `message` key that is supplied in the log message. Fill in the `details` array with `creditCardNumber`, which is passed into the `validateCreditCard` Activity.
+3. Look at the call to the `validateCreditCard` Activity. We want to catch if there is an error in this Activity, so we check if the error is an instance of an `ActivityFailure` and the error's cause is an instance of an `ApplicationFailure`. If so, log the message of the error cause like `err.cause.message`. 
 4. Right now, if we have an Activity that has an invalid credit card number, the Activity will fail, but not the Workflow Execution. However, if we would like the failed Activity to fail the Workflow Execution, we need to make the Activity nonRetryable.
 5. In `activities.ts`, add a `nonRetryable` key in the object passed into `ApplicationFailure`. Set this key to `true`. Save your file. Now if this Activity fails, the Workflow Execution will also fail.
 6. Save your file.
@@ -42,7 +44,7 @@ In this part of the exercise, you will throw your Activity Failures that will fa
 In this part of the exercise, you will throw your error that will fail your Workflow Execution. Remember that in Workflows, if you throw an `ApplicationFailure`, the Workflow Execution will fail. 
 
 1. Edit the `workflows.ts` file.
-2. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers, throw an `ApplicationFailure`.
+2. In your Workflow, in the part of the logic that determines if the distance is more than 25 kilometers, throw an `ApplicationFailure`. In the object of the `ApplicationFailure`, the message can be the message in the logged error, and the details can take in the amount of distance the customer lives from the store. Since this `ApplicationFailure` is thrown in the Workflow and not marked as retryable, the Workflow Execution will fail.
 3. Save your file.
 
 ## Part D: Run the Workflow

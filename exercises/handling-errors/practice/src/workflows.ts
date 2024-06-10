@@ -15,12 +15,12 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    // TODO Part B: Fill out the message and details
     log.error(`Invalid credit card number`);
-    throw ApplicationFailure.create({
-      message: '',
-      details: [],
-    });
+    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
+      // TODO Part B: Log the message of the error cause
+    } else {
+      log.error(`error validating credit card number: ${err}`);
+    }
   }
 
   if (order.isDelivery) {
