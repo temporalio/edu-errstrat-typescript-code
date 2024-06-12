@@ -51,11 +51,10 @@ In this part of the exercise, we will add heartbeating to our `pollDeliveryDrive
 
 ## Part D: Add a Heartbeat Timeout
 
-In this part of the exercise, we will add a Heartbeat Timeout to your Activities. If a heartbeat timeout is not set, Temporal doesn't track the heartbeat signals
-sent by the activity. 
+In this part of the exercise, we will add a Heartbeat Timeout to your Activities. If a heartbeat Timeout is not set, Temporal doesn't track the Heartbeats sent by the Activity. 
 
 1. Edit `workflows.ts`.
-2. Below the `startToCloseTimeout`, add a `heartbeatTimeout` and set it to thirty seconds. This sets the maximum time between Activity Heartbeats. If an Activity times out (e.g., due to a missed Heartbeat), the next attempt can use this payload to continue from where it left off.
+2. Below the `startToCloseTimeout`, add a `heartbeatTimeout` and set it to 30 seconds. This sets the maximum time between Activity Heartbeats. If an Activity times out (e.g., due to a missed Heartbeat), the next attempt can use this payload to continue from where it left off.
 3. Save your file.
 
 ## Part E: Run the Workflow
@@ -66,6 +65,6 @@ Next, let's run the Workflow.
 2. In another terminal, run the Worker by running `npm run start`.
 3. In another terminal, start the Workflow by running `npm run workflow`.
 
-Before your Workflow is completed, if you click on the Workflow ID in your Web UI, you can see the Heartbeat details. Under "Pending Activities", you can see the attempts, state of the Heartbeat etc.
+Before your Workflow is completed, if you click on the Workflow ID in your Web UI, you can view the most recent Heartbeat message for a pending Activity under 'Pending Activities'. The Heartbeat message is not visible in the Web UI for an Activity Execution that has closed.
 
 ### This is the end of the exercise.

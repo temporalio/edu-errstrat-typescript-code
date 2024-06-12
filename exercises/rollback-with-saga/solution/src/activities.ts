@@ -14,7 +14,6 @@ export async function getDistance(address: Address): Promise<Distance> {
   if (kilometers < 1) {
     kilometers = 5;
   }
-
   const distance = {
     kilometers,
   };
