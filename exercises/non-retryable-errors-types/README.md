@@ -2,7 +2,7 @@
 
 During this exercise, you will:
 
-- Configure non-retryable errors for Activities
+- Configure non-retryable error types for Activities
 - Implement customized retry policies for Activities
 - Develop Workflow logic for fallback strategies in the case of Activity failure
 - Add Heartbeats and Heartbeat timeouts to help users monitor the health of Activities 
@@ -16,15 +16,15 @@ You'll need two terminal windows for this exercise.
 1. In all terminals, change to the `exercises/non-retryable-error-types/practice` directory.
 2. In one terminal, run `npm install` to install dependencies.
 
-## Part A: Add Non-Retryable Errors
+## Part A: Convert Non-Retryable Errors to Be Handled By a Retry Policy
 
-In this part of the exercise, we will take the Application Failures we defined in the first exercise (Handling Errors) and remove the `nonRetryable` flag and add error types into a list of error types we don't want to retry instead.
+In this part of the exercise, we will take the Application Failures we defined in the first exercise (Handling Errors) and remove the `nonRetryable` flag and add error types into a list of error types we don't want to retry instead. After consideration, you've determined that while you may want to immediately fail your Workflow on failure, others who call your Activity may not.
 
 1. Edit `activities.ts`.
 2. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid error. We want to make this an error type that we don't retry on instead of just specifying this specific Error as non retriable. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'. Remove the `nonRetryable` key.
 2. In the `sendBill` Activity, we also threw an `ApplicationFailure` if the charge amount is negative. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidChargeAmountErr'.
 
-## Part B: Configure Retry Policies of an Error
+## Part B: Configure Retry Policies to set Non-Retryable Error Types
 
 In this part of the exercise, we will configure the retry policies of an error.
 
