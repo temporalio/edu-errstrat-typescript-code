@@ -39,10 +39,10 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 
   // reject invalid amounts before calling the payment processor
   if (chargeAmount < 0) {
-    // TODO Part A: Add a `type` key and set it to 'InvalidChargeAmountErr'.
     throw ApplicationFailure.create({
       message: `Invalid charge amount: ${chargeAmount} (must be above zero)`,
       details: [chargeAmount],
+      nonRetryable: true
     });
   }
 

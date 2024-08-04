@@ -1,6 +1,6 @@
 import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
-import { Distance, OrderConfirmation, PizzaOrder} from './shared';
+import { Distance, OrderConfirmation, PizzaOrder } from './shared';
 
 const { sendBill, getDistance, validateCreditCard } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
@@ -13,10 +13,12 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating credit card number: ${err}`);
+    if (err instanceof ActivityFailure) {
+      log.error('Unable to process credit card');
+      throw ApplicationFailure.create({
+        message: 'Invalid credit card number error',
+        details: [order.customer.creditCardNumber],
+      });
     }
   }
 
@@ -26,12 +28,11 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     try {
       distance = await getDistance(order.address);
     } catch (err) {
-      log.error('Unable to get distance', {});
+      log.error(`Unable to get distance: ${err}`);
       throw err;
     }
 
     if (distance.kilometers > 25) {
-      log.error(`Customer lives too far away: ${distance.kilometers} km`);
       throw ApplicationFailure.create({
         message: 'Customer lives too far away for delivery',
         details: [distance.kilometers],
@@ -56,7 +57,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     return await sendBill(bill);
   } catch (e) {
-    log.error('Unable to bill customer', {});
+    log.error(`Unable to bill customer: ${e}`);
     throw e;
   }
 }

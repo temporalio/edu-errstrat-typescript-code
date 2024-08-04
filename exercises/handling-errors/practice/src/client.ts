@@ -31,17 +31,16 @@ run().catch((err) => {
 function createPizzaOrder(): PizzaOrder {
   const customer = {
     customerID: 12983,
-    // Invalid credit card number:
-    creditCardNumber: '1234567890thisisinvalid',
+    // TODO Part C: Make this credit card number invalid by appending '123' to it
+    creditCardNumber: '1234567890123456',
     name: 'María García',
     email: 'maria1985@example.com',
     phone: '415-555-7418',
   };
 
-  // Invalid address:
   const address = {
     line1: '701 Mission Street',
-    line2: 'thisisinvalidthisisinvalidthisisinvalidthisisinvalidthisisinvalidthisinvalid',
+    line2: 'test',
     city: 'San Francisco',
     state: 'CA',
     postalCode: '94103',

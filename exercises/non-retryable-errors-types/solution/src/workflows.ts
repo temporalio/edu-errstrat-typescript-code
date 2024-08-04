@@ -15,7 +15,7 @@ const {
     backoffCoefficient: 1.0,
     maximumInterval: '1 second',
     maximumAttempts: 5,
-    nonRetryableErrorTypes: ['InvalidCreditCardErr', 'InvalidChargeAmountErr']
+    nonRetryableErrorTypes: ['InvalidCreditCardErr']
   },
 });
 
@@ -28,7 +28,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     try {
       distance = await getDistance(order.address);
     } catch (e) {
-      log.error('Unable to get distance', {});
+      log.error(`Unable to get distance: ${e}`);
       throw e;
     }
     if (distance.kilometers > 25) {
@@ -47,10 +47,12 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating credit card number: ${err}`);
+    if (err instanceof ActivityFailure) {
+      log.error('Unable to process credit card');
+      throw ApplicationFailure.create({
+        message: 'Invalid credit card number error',
+        details: [order.customer.creditCardNumber],
+      });
     }
   }
 
@@ -78,7 +80,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
     return orderConfirmation;
   } catch (e) {
-    log.error('Unable to bill customer', {});
+    log.error(`Unable to bill customer: ${e}`);
     throw e;
   }
 }

@@ -15,27 +15,25 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    log.error(`Invalid credit card number`);
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      // TODO Part B: Log the message of the error cause
-    } else {
-      log.error(`error validating credit card number: ${err}`);
+    if (err instanceof ActivityFailure) {
+      // TODO Part B: Throw an ApplicationFailure
+      // Pass in the message: "Invalid credit card number error"
     }
   }
-
   if (order.isDelivery) {
     let distance: Distance | undefined = undefined;
 
     try {
       distance = await getDistance(order.address);
     } catch (err) {
-      log.error('Unable to get distance', {});
+      log.error(`Unable to get distance, ${err}`);
       throw err;
     }
     if (distance.kilometers > 25) {
-      log.error('Customer lives too far away for delivery');
-      // TODO C: Throw an Application Failure
-      // if the customer lives more than 26km away.
+      throw ApplicationFailure.create({
+        message: 'Customer lives too far away for delivery',
+        details: [distance.kilometers],
+      });
     }
   }
 
@@ -56,7 +54,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     return await sendBill(bill);
   } catch (err) {
-    log.error('Unable to bill customer', {});
+    log.error(`Unable to bill customer: ${err}`);
     throw err;
   }
 }

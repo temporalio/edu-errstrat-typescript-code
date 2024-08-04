@@ -14,11 +14,9 @@ const {
   retry: {
     // TODO Part B: Add in the values for
     // `initialInterval`, `backoffCoefficient`, `maximumInterval`, `maximumAttempts`
-    // to allow for the retry of these Activities to be
-    // once per second for five seconds
+    // defined in the README.
     // Add in a nonRetryableErrorTypes key
-    // Set it to an array with 
-    // `InvalidCreditCardErr` and `InvalidChargeAmount`.
+    // Set it to an array with `InvalidCreditCardErr` inside.
   },
 });
 
@@ -31,7 +29,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     try {
       distance = await getDistance(order.address);
     } catch (e) {
-      log.error('Unable to get distance', {});
+      log.error(`Unable to get distance: ${e}`);
       throw e;
     }
     if (distance.kilometers > 25) {
@@ -50,11 +48,10 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating credit card number: ${err}`);
-    }
+    throw ApplicationFailure.create({
+      message: 'Invalid credit card number error',
+      details: [order.customer.creditCardNumber],
+    });
   }
 
   // We use a short Timer duration here to avoid delaying the exercise
@@ -81,7 +78,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
 
     return orderConfirmation;
   } catch (e) {
-    log.error('Unable to bill customer', {});
+    log.error(`Unable to bill customer: ${e}`);
     throw e;
   }
 }

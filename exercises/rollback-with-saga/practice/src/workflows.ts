@@ -7,9 +7,7 @@ import { Distance, PizzaOrder, OrderConfirmation } from './shared';
 
 // TODO Part B: Add `refundCustomer` and `revertInventory`
 // into `proxyActivities`.
-const { sendBill, getDistance, validateCreditCard, updateInventory } = proxyActivities<
-  typeof activities
->({
+const { sendBill, getDistance, validateCreditCard, updateInventory } = proxyActivities<typeof activities>({
   startToCloseTimeout: '5 seconds',
   retry: {
     maximumInterval: '10 seconds',
@@ -26,7 +24,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     try {
       distance = await getDistance(order.address);
     } catch (e) {
-      log.error('Unable to get distance', {});
+      log.error(`Unable to get distance: ${e}`);
       throw e;
     }
     if (distance.kilometers > 25) {
@@ -45,27 +43,12 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error validating credit card number: ${err}`);
-    }
-  }
-
-  //Add compensation for updating inventory by removing it
-  compensations.unshift({
-    message: errorMessage('reversing update inventory'),
-    fn: () => revertInventory(order.items),
-  });
-
-  // Update inventory by removing pizza ingredients from stock
-  try {
-    await updateInventory(order.items);
-  } catch (err) {
-    if (err instanceof ActivityFailure && err.cause instanceof ApplicationFailure) {
-      log.error(err.cause.message);
-    } else {
-      log.error(`error updating inventory: ${err}`);
+    if (err instanceof ActivityFailure) {
+      log.error('Unable to process credit card');
+      throw ApplicationFailure.create({
+        message: 'Invalid credit card number error',
+        details: [order.customer.creditCardNumber],
+      });
     }
   }
 
@@ -79,11 +62,20 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     description: 'Pizza',
   };
 
-  // TODO Part E: Add compensation for the `sendBill` Activity.
-  // This compensation should call the `refundCustomer` Activity.
-  // This Activity should take in a `bill` argument.
-
   try {
+    //Add compensation for updating inventory by removing it
+    compensations.unshift({
+      message: errorMessage('reversing update inventory'),
+      fn: () => revertInventory(order.items),
+    });
+
+    // Update inventory by removing pizza ingredients from stock
+    await updateInventory(order.items);
+
+    // TODO Part E: Add compensation for the `sendBill` Activity.
+    // This compensation should call the `refundCustomer` Activity.
+    // This Activity should take in a `bill` argument.
+
     await sendBill(bill);
     const orderConfirmation = {
       orderNumber: bill.orderNumber,
@@ -94,7 +86,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     };
     return orderConfirmation;
   } catch (err) {
-    log.error('Unable to bill customer', {});
+    log.error(`Unable to bill customer: ${err}`);
     // TODO Part F: Call `await compensate(compensations)`.
     throw err;
   }
