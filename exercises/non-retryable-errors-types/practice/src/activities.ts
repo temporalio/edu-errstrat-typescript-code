@@ -1,8 +1,8 @@
 import { Address, Bill, Distance, OrderConfirmation } from './shared';
 import axios from 'axios';
 import { ApplicationFailure } from '@temporalio/common';
-// TODO Part C: Add `heartbeat` and `activityInfo` into `@temporalio/activity` imports below.
-import { log, sleep } from '@temporalio/activity';
+// TODO Part C: Add `heartbeat` into `@temporalio/activity` imports below.
+import { log, sleep, activityInfo } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
 
 export async function getDistance(address: Address): Promise<Distance> {
@@ -95,7 +95,7 @@ export async function pollDeliveryDriver(order: PizzaOrder): Promise<void> {
   // The loop should iterate up to ten times, one by one.
 
   try {
-    log.info('Polling external delivery driver...', { progress });
+    log.info('Polling external delivery driver...');
     const response = await axios.get(url);
     const content = response.data;
 

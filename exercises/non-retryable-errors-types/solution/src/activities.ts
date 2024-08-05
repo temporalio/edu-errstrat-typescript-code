@@ -89,14 +89,14 @@ export async function pollDeliveryDriver(order: PizzaOrder): Promise<void> {
   log.info('Starting activity at progress', { startingPoint });
   for (let progress = startingPoint; progress <= 10; progress++) {
     try {
-      log.info('Polling external delivery driver...', { progress });
+      log.info('Polling external delivery driver...');
       const response = await axios.get(url);
       const content = response.data;
       heartbeat(progress);
       await sleep('20 seconds')
       // Skips polling if status code is in the 500s or 403
       if (response.status >= 500 || response.status == 403) {
-        throw ApplicationFailure.create({ message: `Error. Status Code: ${response.status}` });
+        throw ApplicationFailure.create({ message: `Error. Status Code: ${response.status}`, nonRetryable: true });
       }
 
       log.info(`External delivery driver assigned from: ${content.service}`);

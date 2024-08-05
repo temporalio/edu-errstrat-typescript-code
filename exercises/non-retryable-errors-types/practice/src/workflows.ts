@@ -48,10 +48,13 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
   try {
     await validateCreditCard(order.customer.creditCardNumber);
   } catch (err) {
-    throw ApplicationFailure.create({
-      message: 'Invalid credit card number error',
-      details: [order.customer.creditCardNumber],
-    });
+    if (err instanceof ActivityFailure) {
+      log.error('Unable to process credit card');
+      throw ApplicationFailure.create({
+        message: 'Invalid credit card number error',
+        details: [order.customer.creditCardNumber],
+      });
+    }
   }
 
   // We use a short Timer duration here to avoid delaying the exercise

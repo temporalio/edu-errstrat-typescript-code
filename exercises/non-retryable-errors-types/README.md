@@ -23,7 +23,7 @@ In this part of the exercise, we will take the `ApplicationFailure` that you def
 1. Edit `activities.ts`.
 2. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid number. We want to make this an error type that we don't retry on. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'. Remove the `nonRetryable` key.
 3. Save your file.
-4. Verify that your error is now being retried by attempting to execute the Workflow Execution.
+4. We have already supplied an invalid credit card number for you in your `client.ts`. Verify that your error is now being retried by attempting to execute the Workflow Execution.
     i. In one terminal, start the Worker by running `npm run start.watch`.
     ii. In another terminal window, start the Workflow Execution by running `npm run workflow`.
     iii. Go to the WebUI and view the status of the Workflow. It should be Running. In the terminal window that the Worker is running, you can see that it is currently retrying the exception, verifying that the exception is no longer non-retryable.
@@ -44,7 +44,7 @@ You can also specify errors types that are not retryable in the Retry Policy. Th
 
 1. Edit `workflows.ts`.
 2. In the object supplied to `proxyActivities`, add a `retry` object with the following key value pairs: 
-   - `initialInterva`l: '1 second'
+   - `initialInterval`: '1 second'
    - `backoffCoefficient`: 1.0
    - `maximumInterval`: '1 second'
    - `maximumAttempts`: 5
@@ -60,7 +60,7 @@ You can also specify errors types that are not retryable in the Retry Policy. Th
 In this part of the exercise, we will add heartbeating to our `pollDeliveryDriver` Activity.
 
 1. Edit `activities.ts`. We have added a `pollDeliveryDriver` Activity. This Activity polls an external service for delivery drivers. If that service returns a status code of 500s or 403, we don't want to retry polling this service. Within this Activity, within the `if` statement that checks the status code, throw a new `Application Failure` with a message that lets the user know that there is an invalid server error. Set this Application Failure's `nonRetryable` key to `true`.
-2. Now, let's add heartbeating. Import `heartbeat` and `activityInfo` from `@temporalio/activity`.
+2. Now, let's add heartbeating. Import `heartbeat` from `@temporalio/activity`.
 3. In the `pollExternalDeliveryDriver` Activity, notice that we have a `startingPoint` variable. This variable is set to the resuming point that the heartbeat last left off of, or 1, if the heartbeating has not began.
 4. Add your entire `try/catch` block into a `for loop`. When initiating the loop, it should initiate at `let progress = startingPoint` and the progress should increment by one after each iteration of the loop. The loop should iterate up to ten times, one by one. This loop will simulate multiple attempts to poll an external service (e.g., DoorDash, UberEats) to find an available delivery driver.
 5. Call `heartbeat()` within the `for loop` so it invokes in each iteration of the loop. The `heartbeat` function should take in `progress`.
@@ -77,11 +77,12 @@ In the previous part of the exercise, you added a Heartbeat to an Activity. Howe
 
 ## Part E: Run the Workflow
 
-Next, let's run the Workflow.
+Next, let's run the Workflow. Let's go back to change your credit card to a valid one.
 
-1. In one terminal, start the service that will poll for external delivery drivers by running `npm run service`. The window should indicate that the "Server is running on port 9998".
-2. In another terminal, run the Worker by running `npm run start.watch`.
-3. In another terminal, start the Workflow by running `npm run workflow`.
+1. In `client.ts`, change your credit card number to `1234567890123456`. Save your file.
+2. In one terminal, start the service that will poll for external delivery drivers by running `npm run service`. The window should indicate that the "Server is running on port 9998".
+3. In another terminal, run the Worker by running `npm run start.watch`.
+4. In another terminal, start the Workflow by running `npm run workflow`.
 
 Before your Workflow is completed, if you click on the Workflow ID in your Web UI, click 'Pending Activities'. In this section you should see Heartbeat Details and JSON representing the payload. The Heartbeat message is not visible in the Web UI for an Activity Execution that has closed.
     i. Remember, the simulation will finish at a random interval. You may need to run this a few times to see the results.
