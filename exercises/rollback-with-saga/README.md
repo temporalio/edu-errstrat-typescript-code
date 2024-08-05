@@ -57,8 +57,7 @@ In this part of the exercise, you will create a function which will loop through
 2. Import your `Compensation` interface from `shared.ts` that you defined in Part C.
 3. Notice that we have already provided for you an `errorMessage` function which takes in the error message from a failing Activity and displays it in a more readable fashion.
 4. Now, look at the next function: `compensate`. This function will take in a list of the `Compensation` objects that you defined in part C and defaults as an empty array. It will then iterate through a list of `Compensation` objects, log the error message provided in the `Compensation` object, and call the function provided in the `Compensation` object.
-5. Surround the `try/catch` block with a `foreach` statement that iterates over the `compensations` array, using `comp` as the name for each element (thereby matching the name of the object referenced in the `await` statement).
-6. Save the file. Note that in most production setup, failure to compensate would require human intervention, or at very least, filing the event to some external system.
+5. Save the file. Note that in most production setup, failure to compensate would require human intervention, or at very least, filing the event to some external system.
 
 ## Part E: Fill in Your Compensation Array
 
