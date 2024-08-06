@@ -61,8 +61,8 @@ export async function sendBill(bill: Bill): Promise<OrderConfirmation> {
 export async function validateCreditCard(creditCardNumber: string): Promise<void> {
   log.info('validateCreditCard invoked', { CreditCardNumber: creditCardNumber });
 
-  // Check if the credit card number has 16 digits
-  const isValid = /^[0-9]{16}$/.test(creditCardNumber);
+   // Check if the credit card number has 16 digits
+   const isValid = creditCardNumber.length == 16;
 
   if (!isValid) {
     throw ApplicationFailure.create({

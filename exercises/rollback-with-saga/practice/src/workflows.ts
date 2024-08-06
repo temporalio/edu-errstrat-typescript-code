@@ -1,6 +1,6 @@
 import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
-// TODO Part F: Import your `compensatse` function and `errorMessage` function
+// TODO Part F: Import your `compensate` and `errorMessage` functions
 // From compensationUtils.
 // TODO Part E: Import your `Compensation` interface from `.shared.ts`.
 import { Distance, PizzaOrder, OrderConfirmation } from './shared';

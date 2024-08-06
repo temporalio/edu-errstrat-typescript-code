@@ -88,7 +88,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     };
     return orderConfirmation;
   } catch (err) {
-    log.error('Error occurred in pizza workflow', { error: err });
+    log.error(`Unable to bill customer: ${err}`);
     await compensate(compensations);
     throw err;
   }
