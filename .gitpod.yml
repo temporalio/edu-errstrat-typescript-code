@@ -59,3 +59,4 @@ vscode:
     - vscjava.vscode-java-test
     - vscjava.vscode-java-debug
     - wingrunr21.vscode-ruby
+    - bierner.markdown-mermaid
