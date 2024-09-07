@@ -1,6 +1,6 @@
 import { proxyActivities, ApplicationFailure, ActivityFailure, log, sleep } from '@temporalio/workflow';
 import type * as activities from './activities';
-// TODO Part F: Import your `compensate` and `errorMessage` functions
+// TODO Part E: Import your `compensate` and `errorMessage` functions
 // From compensationUtils.
 // TODO Part E: Import your `Compensation` interface from `.shared.ts`.
 import { Distance, PizzaOrder, OrderConfirmation } from './shared';
@@ -75,6 +75,7 @@ export async function pizzaWorkflow(order: PizzaOrder): Promise<OrderConfirmatio
     // TODO Part E: Add compensation for the `sendBill` Activity.
     // This compensation should call the `refundCustomer` Activity.
     // This Activity should take in a `bill` argument.
+    // Add your own message.
 
     await sendBill(bill);
     const orderConfirmation = {

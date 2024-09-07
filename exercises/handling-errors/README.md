@@ -24,7 +24,7 @@ Application Failures are used to communicate application-specific failures in Wo
 1. Edit the `activities.ts` file.
 2. Import `ApplicationFailure` from `@temporalio/common`.
 3. In the `sendBill` Activity, we want to throw a non-retryable `ApplicationFailure` if the charge is negative. It is important to use a non-retryable failure here, as you want to fail the Activity if the amount was calculated to be negative. The Application Failure includes a message as well as a details array with a list of details pertaining to the failure. Since we want our custom error data to be serialized and transmitted over the network, we must set our custom data in the `details` field. Add a `nonRetryable` key and set it to `true`.
-4. Go to the `validateCreditCard` Activity. We want to throw an error if the entered credit card number does not have 16 digits. Replace the logged error with your own `ApplicationFailure`, following the pattern you saw in step 3.
+4. Go to the `validateCreditCard` Activity. In the `!isValid` if statement, throw throw an `ApplicationFailure` if the entered credit card number does not have 16 digits. In the `detailsField`, add your credit card number. Set the `nonRetryable` key to `true`.You can follow the pattern you saw in step 3.
 
 ## Part B: Throw the Activity Failures in Your Workflow
 
@@ -34,7 +34,7 @@ In this part of the exercise, you will catch the `ApplicationFailure` that was t
 2. Add `ApplicationFailure` in your imports from `@temporalio/workflow` at the top of your file.
 3. Look at the call to the `validateCreditCard` Activity. 
     i. If a non-retryable `ApplicationFailure` is thrown, the Workflow Execution will fail. However, it is possible to catch this failure and either handle it, or continue to propagate it up.
-    ii. We wrapped the call to the `validateCreditCard` Activity in a `try/catch` block. However, you will not catch `ApplicationFailure`. Since the `ApplicationFailure` in the Activity is designated as non-retryable, by the time it reaches the Workflow it is converted to an `ActvityFailure`. 
+    ii. We wrapped the call to the `validateCreditCard` Activity in a `try/catch` block. Since the `ApplicationFailure` in the Activity is designated as non-retryable, by the time it reaches the Workflow it is converted to an `ActvityFailure`. 
     iii. Within the `catch` block, add a logging statement stating that the Activity has failed.
     iv. After the logging statement, throw another `ApplicationFailure`, passing in the message 'Invalid credit card number error'. This will cause the Workflow to fail, as you were unable to bill the customer.
 4. Save your file.

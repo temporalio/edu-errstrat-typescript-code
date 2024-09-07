@@ -8,7 +8,7 @@ const {
   validateCreditCard,
   pollDeliveryDriver,
 } = proxyActivities<typeof activities>({
-  startToCloseTimeout: '30 minutes',
+  startToCloseTimeout: '1 minute',
   heartbeatTimeout: '30 seconds',
   retry: {
     initialInterval: '1 second',

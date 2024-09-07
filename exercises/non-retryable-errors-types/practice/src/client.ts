@@ -1,4 +1,4 @@
-import { Connection, Client } from '@temporalio/client';
+import { Connection, Client, WorkflowIdReusePolicy  } from '@temporalio/client';
 import { pizzaWorkflow } from './workflows';
 import { Pizza, PizzaOrder, TASK_QUEUE_NAME } from './shared';
 
@@ -15,6 +15,7 @@ async function run() {
     args: [order],
     taskQueue: TASK_QUEUE_NAME,
     workflowId: `pizza-workflow-order-${order.orderNumber}`,
+    workflowIdReusePolicy: WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING
   });
 
   // optional: wait for client result

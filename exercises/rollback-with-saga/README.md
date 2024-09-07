@@ -19,7 +19,7 @@ You'll need two terminal windows for this exercise.
 In this part of the exercise, you will define a Test Error that you will use to test the rolling back of compensations with the Saga Pattern.
 
 1. Edit the `activities.ts` file.
-2. At the very top of the `sendBill` Activity, throw an Application Failure that just sends the message: `Test Error`. We will throw this error in the `SendBill` Activity to roll back compensations since that step. Set the error's `nonRetryable` key to `true`. This way, when we run into this intentional error, we can skip the retrying error to see the rollback of the saga pattern.
+2. At the very top of the `sendBill` Activity, throw an Application Failure that just sends the message: `Test Error`. Set the error's `nonRetryable` key to `true`. We will throw this error in the `SendBill` Activity to roll back compensations since that step. This way, when we run into this intentional error, we can skip the retrying error to see the rollback of the saga pattern.
 3. Save the file.
 
 ## Part B: Create your Compensation Activities
@@ -69,9 +69,10 @@ Then, if `sendBill` throws an error, we call the `compensate` function which rol
 
 1. Edit the `workflows.ts` file.
 2. Import your `Compensation` interface from `shared.ts` that you defined in Part C. Notice that at the beginning of the `pizzaWorkflow`, we define a variable called `compensations`, which is a list of `Compensation` objects (and defaulted as an empty array).
-3. Look at the first compensation (compensation for `updateInventory`) which is provided for you. Before we call `updateInventory`, we add its compensating counterpart - `revertInventory` into the array of `compensations`. We use the `unshift` method, which adds an item in the beginning of an array. This ensures that the compensations are executed in the reverse order of their addition, which is important for correctly reversing the steps of the Workflow.
-4. Following the pattern in step 3, add a compensation for an error in the `sendBill` Activity. Add in a compensation object for `sendBill` by calling `refundCustomer` which takes in a `bill` argument.
-5. At this point, as you go through the pizza Workflow, your `compensations` array should look like this: `[
+3. Import your `compensate` function and `errorMessage` function from the `compensationUtils` file you looked at in part D.
+4. The first compensation step is provided for you. Before we call `updateInventory`, we add its compensating counterpart - `revertInventory` into the array of `compensations`. We use the `unshift` method, which adds an item in the beginning of an array. This ensures that the compensations are executed in the reverse order of their addition, which is important for correctly reversing the steps of the Workflow.
+5. Following the pattern in step 3, add a compensation for an error in the `sendBill` Activity. Add in a compensation object for `sendBill` by calling `refundCustomer` which takes in a `bill` argument. Add your own message.
+6. At this point, as you go through the pizza Workflow, your `compensations` array should look like this: `[
   { message: 'reversing send bill: ', fn: refundCustomer },
   { message: 'reversing update inventory: ', fn: revertInventory }]`.
 
@@ -80,9 +81,8 @@ Then, if `sendBill` throws an error, we call the `compensate` function which rol
 In this part of the exercise, you will call the `compensate` function that you defined in Part D.
 
 1. Edit the `workflows.ts` file.
-2. Import your `compensate` function and `errorMessage` function from the `compensationUtils` file you looked at in part D.
-3. In the `try/catch` block of your calling of `sendBill` Activity, call `await compensate(compensations)`. Now if `sendBill` fails, first we roll back on `sendBill` by calling `refundCustomer`. Next, we will roll back on `updateInventory` by calling `revertInventory`.
-4. Save the file.
+2. In the `try/catch` block of your calling of `sendBill` Activity, call `await compensate(compensations)`. Now if `sendBill` fails, first we roll back on `sendBill` by calling `refundCustomer`. Next, we will roll back on `updateInventory` by calling `revertInventory`.
+3. Save the file.
 
 ## Part G: Test the Rollback of Your Activities
 
