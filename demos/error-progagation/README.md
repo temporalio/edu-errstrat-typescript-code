@@ -67,7 +67,7 @@ mvn exec:java -Dexec.mainClass="greetingworkflow.GreetingWorker"
 
 ## Run the Go Starter
 
-1. Change directories into the `workflow` directory.
+1. Change directories into the `starter` directory.
 2. Install the Go SDK
 ```bash
 go get
