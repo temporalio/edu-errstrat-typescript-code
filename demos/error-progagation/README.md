@@ -72,9 +72,9 @@ mvn exec:java -Dexec.mainClass="greetingworkflow.GreetingWorker"
 ```bash
 go get
 ```
-3. Run the Starter
+3. Run the Starter with your name 
 ```bash
-go run main.go
+go run main.go Angela
 ```
 
 ## Observing the Results
