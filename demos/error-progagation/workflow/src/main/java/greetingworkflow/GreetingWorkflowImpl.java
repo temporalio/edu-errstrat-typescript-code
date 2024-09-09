@@ -28,7 +28,7 @@ public class GreetingWorkflowImpl implements GreetingWorkflow {
 
     String greetingResult;
     try{
-      greetingResult = activity.execute("compose_greeting", String.class, "hello");
+      greetingResult = activity.execute("compose_greeting", String.class, name);
     } catch (ActivityFailure e){
       throw ApplicationFailure.newFailureWithCause("Failure from Java Workflow", "ErrorPropagationDemo", e);
     }
