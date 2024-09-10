@@ -43,8 +43,6 @@ In this part of the exercise, you will catch the `ApplicationFailure` that was t
 
 In this part of the exercise, you will run your Workflow and see both your Workflow and Activity fail.
 
-In the `client.ts` file, an invalid credit card number has been provided which will throw an error in the `validateCreditCard` Activity.
-
 First, run the Workflow successfully:
 
 1. In one terminal, start the Worker by running `npm run start.watch`.
@@ -53,7 +51,7 @@ First, run the Workflow successfully:
 
 Next, you'll modify the credit card number to cause the Workflow Execution to fail:
 
-1. In the `client.ts` file, append '123' to the `creditCardNumber` value to make it throw an error in the `validateCreditCard` Activity. Save the file.
+1. In the `client.ts` file, append '123' to the `creditCardNumber` value on the `customer` object in the `createPizzaOrder` function to make it throw an error in the `validateCreditCard` Activity. Save the file.
 2. Rerun the Workflow execution by rerunning `npm run workflow`.
 3. You should see in the Web UI an `ActivityTaskFailed` Event for the `validateCreditCard` Activity. You can see in the Event History the details of the failure including its payloads, its attributes etc.
 4. You should see in the Web UI a `WorkflowExecutionFailed` Event with the message: " "Invalid credit card number error".

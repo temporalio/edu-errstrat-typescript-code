@@ -18,7 +18,7 @@ You'll need two terminal windows for this exercise.
 
 ## Part A: Convert Non-Retryable Errors to Be Handled By a Retry Policy
 
-In this part of the exercise, we will take the `ApplicationFailure` that you defined in the `validatedCreditCard` method in the first exercise (Handling Errors) to not be set as non-retryable by default. After consideration, you've determined that while you may want to immediately fail your Workflow Execution on failure, others who call your Activity may not.
+In this part of the exercise, we will take the `ApplicationFailure` that you defined in the `validatedCreditCard` method in the first exercise (Handling Errors) to not retry an invalid credit card error. After consideration, you've determined that while you may want to immediately fail your Activity Execution on any failure, others who call your Activity may not.
 
 1. Edit `activities.ts`.
 2. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid number. We want to make this an error type that we don't retry on. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'. Remove the `nonRetryable` key.
@@ -79,7 +79,7 @@ In the previous part of the exercise, you added a Heartbeat to an Activity. Howe
 
 Next, let's run the Workflow. Let's go back to change your credit card to a valid one.
 
-1. In `client.ts`, change your credit card number to `1234567890123456`. Save your file.
+1. In `client.ts`, change your `creditCardNumber` value on the `customer` object in the `createPizzaOrder` function to `1234567890123456`. Save the file.
 2. In one terminal, start the service that will poll for external delivery drivers by running `npm run service`. The window should indicate that the "Server is running on port 9998".
 3. In another terminal, run the Worker by running `npm run start.watch`.
 4. In another terminal, start the Workflow by running `npm run workflow`.
