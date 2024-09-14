@@ -1,7 +1,6 @@
 import { Address, Bill, Distance, OrderConfirmation} from './shared';
 import axios from 'axios';
-import { ApplicationFailure } from '@temporalio/common';
-import { log, heartbeat, activityInfo, sleep } from '@temporalio/activity';
+import { log, heartbeat, activityInfo, sleep, ApplicationFailure } from '@temporalio/activity';
 import { PizzaOrder } from './shared';
 
 export async function getDistance(address: Address): Promise<Distance> {

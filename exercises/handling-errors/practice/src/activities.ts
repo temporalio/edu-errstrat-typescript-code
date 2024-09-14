@@ -1,5 +1,5 @@
-// TODO Part A: Import `ApplicationFailure` from `@temporalio/common`
 import { Address, Bill, Distance, OrderConfirmation } from './shared';
+// TODO Part A: Add `ApplicationFailure` from `@temporalio/activity`
 import { log } from '@temporalio/activity';
 
 export async function getDistance(address: Address): Promise<Distance> {

@@ -22,21 +22,21 @@ In this part of the exercise, you will throw an Application Failure that will fa
 Application Failures are used to communicate application-specific failures in Workflows and Activities. In Activities, if you throw an `ApplicationFailure`, the Activity will fail. However, unless this Activity is specified as non-retryable, it will retry according to the Retry Policy. To have an Activity fail when an `ApplicationFailure` is thrown, set it as non-retryable. Any other error that is thrown in TypeScript is automatically converted to an `ActivityFailure` upon being thrown.
 
 1. Edit the `activities.ts` file.
-2. Import `ApplicationFailure` from `@temporalio/common`.
+2. Add `ApplicationFailure` in your imports from `@temporalio/activity` at the top of your file.
 3. In the `sendBill` Activity, we want to throw a non-retryable `ApplicationFailure` if the charge is negative. It is important to use a non-retryable failure here, as you want to fail the Activity if the amount was calculated to be negative. The Application Failure includes a message as well as a details array with a list of details pertaining to the failure. Since we want our custom error data to be serialized and transmitted over the network, we must set our custom data in the `details` field. Add a `nonRetryable` key and set it to `true`.
-4. Go to the `validateCreditCard` Activity. In the `!isValid` if statement, throw throw an `ApplicationFailure` if the entered credit card number does not have 16 digits. In the `detailsField`, add your credit card number. Set the `nonRetryable` key to `true`.You can follow the pattern you saw in step 3.
+4. Go to the `validateCreditCard` Activity. In the `!isValid` if statement, throw throw an `ApplicationFailure` if the entered credit card number does not have 16 digits. In the details field, add your credit card number. Set the `nonRetryable` key to `true`. You can follow the pattern you saw in step 3.
 
 ## Part B: Throw the Activity Failures in Your Workflow
 
 In this part of the exercise, you will catch the `ApplicationFailure` that was thrown from the `validateCreditCard` Activity and handle it.
 
 1. Edit the `workflows.ts` file.
-2. Add `ApplicationFailure` in your imports from `@temporalio/workflow` at the top of your file.
+2. Add `ApplicationFailure` and `ActivityFailure` in your imports from `@temporalio/workflow` at the top of your file.
 3. Look at the call to the `validateCreditCard` Activity. 
     i. If a non-retryable `ApplicationFailure` is thrown, the Workflow Execution will fail. However, it is possible to catch this failure and either handle it, or continue to propagate it up.
     ii. We wrapped the call to the `validateCreditCard` Activity in a `try/catch` block. Since the `ApplicationFailure` in the Activity is designated as non-retryable, by the time it reaches the Workflow it is converted to an `ActvityFailure`. 
     iii. Within the `catch` block, add a logging statement stating that the Activity has failed.
-    iv. After the logging statement, throw another `ApplicationFailure`, passing in the message 'Invalid credit card number error'. This will cause the Workflow to fail, as you were unable to bill the customer.
+    iv. After the logging statement, throw another `ApplicationFailure`, passing 'Invalid credit card number error' in the `message` field and the credit card number in the `details` field. This will cause the Workflow to fail, as you were unable to bill the customer.
 4. Save your file.
 
 ## Part C: Run the Workflow
