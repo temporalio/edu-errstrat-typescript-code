@@ -28,7 +28,7 @@
     "@temporalio/worker": "^1.9.3",
     "@temporalio/workflow": "^1.9.3",
     "axios": "^1.6.8",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "nanoid": "3.x",
     "proto3-json-serializer": "^2.0.0"
   },
