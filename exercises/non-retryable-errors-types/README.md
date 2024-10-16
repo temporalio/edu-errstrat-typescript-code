@@ -24,10 +24,10 @@ In this part of the exercise, we will take the `ApplicationFailure` that you def
 2. In the first exercise, in the `validateCreditCard` Activity, we threw an `ApplicationFailure` if the credit card had an invalid number. We want to make this an error type that we don't retry on. In the object supplied into `ApplicationFailure`, add a `type` key and set it to a string: 'InvalidCreditCardErr'. Remove the `nonRetryable` key.
 3. Save your file.
 4. We have already supplied an invalid credit card number for you in your `client.ts`. Verify that your error is now being retried by attempting to execute the Workflow Execution.
-    i. In one terminal, start the Worker by running `npm run start.watch`.
-    ii. In another terminal window, start the Workflow Execution by running `npm run workflow`.
-    iii. Go to the WebUI and view the status of the Workflow. It should be Running. In the terminal window that the Worker is running, you can see that it is currently retrying the exception, verifying that the exception is no longer non-retryable.
-    iv. Stop this Workflow in the WebUI, as it will never successfully complete with Ctrl-C.
+    1. In one terminal, start the Worker by running `npm run start.watch`.
+    2. In another terminal window, start the Workflow Execution by running `npm run workflow`.
+    3. Go to the WebUI and view the status of the Workflow. It should be Running. In the terminal window that the Worker is running, you can see that it is currently retrying the exception, verifying that the exception is no longer non-retryable.
+    4. Stop this Workflow in the WebUI, as it will never successfully complete with Ctrl-C.
 
 ## Part B: Configure Retry Policies to set Non-Retryable Error Types
 
