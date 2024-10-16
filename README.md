@@ -12,7 +12,7 @@ For the exercises, make sure to run `temporal server start-dev --ui-port 8080 --
 | Directory Name                   | Exercise                                               |
 | :------------------------------- | :----------------------------------------------------- |
 | `exercises/handling-errors`      | [Exercise 1](exercises/handling-errors/README.md)      |
-| `exercises/non-retryable-errors` | [Exercise 2](exercises/non-retryable-errors/README.md) |
+| `exercises/non-retryable-error-types` | [Exercise 2](exercises/non-retryable-error-types/README.md) |
 | `exercises/rollback-with-saga`   | [Exercise 3](exercises/rollback-with-saga/README.md)   |
 
 ## Reference
