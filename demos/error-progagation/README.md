@@ -6,7 +6,7 @@ failures, which simplifies the process of preserving stack traces across process
 and SDK language boundaries.
 
 **Note: Running this demo will require you to have Python, Java, and Go installed
-on your machine. These are already provided in the GitPod environment**
+on your machine. These are already provided in the Codespaces environment**
 
 ```bash
 temporal server start-dev --ui-port 8080 --db-filename clusterdata.db
